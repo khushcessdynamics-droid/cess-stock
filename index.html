@@ -305,7 +305,7 @@ const PRESETS={
 let DB={parts:[],txns:[],suppliers:[],boms:[],reserves:[],challans:[],invoices:[],gatepasses:[],grns:[],audit:[],company:{}};
 let currentModule='inventory';
 let editingSku=null,txnSku=null,txnDir='OUT',editingSup=null,resSku=null,editingUser=null;
-let pricesUnlocked=false,qrMode='part';
+let pricesUnlocked=false,qrMode='part',adminProfs=[];
 let cart=[],cartDir='OUT',cartScanner=null,pendingScan=null,bomDraft=[],editingBom=null,issueType='project',gateScanner=null;
 let CLOUD=false,sb=null,session=null;
 let me={name:'You',role:'admin',email:'',tabs:PRESETS.admin.tabs,powers:PRESETS.admin.powers,active:true};
@@ -797,7 +797,6 @@ async function renderAdmin(){const box=document.getElementById('adminBody');if(m
   box.innerHTML=html;
   const ul=document.getElementById('adminUsers');
   if(!CLOUD){ul.innerHTML='<div class="empty"><div class="ico">\uD83D\uDC65</div><h3>Cloud mode required</h3><div>User accounts & granular permissions need the Supabase backend. Connect it from the login screen.</div></div>';return;}
-let adminProfs=[];
   let profs=[];try{const {data,error}=await sb.rpc('app_list_users',{p_user:(myCreds&&myCreds.u),p_pass:(myCreds&&myCreds.p)});if(error)throw error;profs=data||[];}catch(e){ul.innerHTML='<div class="empty"><div class="ico">\u26A0\uFE0F</div><h3>Could not load users</h3><div>'+esc(e.message||'')+'<br>Make sure you ran the SQL in Supabase.</div></div>';return;}
   adminProfs=profs;
   ul.innerHTML=profs.length?profs.map((p,i)=>{const tabs=(p.tabs||PRESETS[p.role||'operator'].tabs);const powers=(p.powers||PRESETS[p.role||'operator'].powers);return '<div class="usercard"><div class="uh"><div class="av">'+((p.name||'?')[0].toUpperCase())+'</div><div style="flex:1"><div style="font-weight:700">'+esc(p.name||'')+' '+(p.active===false?'<span class="statustag open">deactivated</span>':'')+'</div><div style="font-size:12px;color:var(--slate)">'+esc(p.username||'')+'</div></div><span class="rbadge '+p.role+'">'+p.role+'</span></div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px"><button class="btn sm ghost" onclick="editUser('+i+')">\u270E Edit access</button><button class="btn sm ghost" onclick="resetPass('+i+')">\uD83D\uDD11 Password</button>'+(p.username!==(myCreds&&myCreds.u)?'<button class="btn sm red" onclick="delUser('+i+')">\uD83D\uDDD1 Delete</button>':'')+'</div><div style="font-size:12px;color:var(--slate);margin-top:6px">Tabs: '+tabs.length+' \u00B7 Powers: '+powers.length+'</div></div>';}).join(''):'<div class="empty"><h3>No team members yet</h3><div>Create your first user with + Create User.</div></div>';}
