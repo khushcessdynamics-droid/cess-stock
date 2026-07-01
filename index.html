@@ -14,22 +14,22 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root{
-    --blue:#2B5AA6;--blue-deep:#1E3F78;--blue-soft:#ECEAE3;--orange:#E0741E;--orange-soft:#F0A65A;
-    --ink:#17130D;--slate:#736B5E;--line:#E4DFD4;--line-ink:#1D1913;--bg:#F6F3EC;--card:#FFFDF9;
-    --ok:#2C7A4B;--ok-bg:#E7F1E7;--warn:#B4611A;--warn-bg:#F7ECDD;--danger:#C23B2E;--danger-bg:#F8E7E1;
+    --blue:#2A2F86;--blue-deep:#1E2370;--blue-soft:#E9EAF6;--orange:#E0741E;--orange-soft:#F0A65A;
+    --ink:#1A1D33;--slate:#6B7086;--line:#E4E6F0;--line-ink:#C9CBE0;--bg:#F4F5FB;--card:#FFFFFF;
+    --ok:#1E9E63;--ok-bg:#E4F5EC;--warn:#C06A16;--warn-bg:#FBEEDD;--danger:#D14338;--danger-bg:#FBE9E7;
     --purple:#6A48A0;--purple-bg:#EEE9F2;
-    --sidebar:#17130D;--sidebar-2:#26201780;--sidebar-line:#2E2820;--sidebar-txt:#C9C0AF;--sidebar-dim:#8C8474;
-    --shadow:none;--shadow-lg:0 12px 40px rgba(23,19,13,.14);
+    --sidebar:#2A2F86;--sidebar-2:#3A4099;--sidebar-line:#3E44A0;--sidebar-txt:#C4C7EC;--sidebar-dim:#8B90C8;
+    --shadow:0 1px 2px rgba(42,47,134,.05),0 6px 20px rgba(42,47,134,.07);--shadow-lg:0 14px 44px rgba(42,47,134,.18);
     --radius:14px;--radius-lg:18px;--radius-sm:9px;--sbw:224px;
     --mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  body{margin:0;font-family:'Space Grotesk',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);background-image:radial-gradient(circle at 1px 1px, rgba(23,19,13,.045) 1px, transparent 0);background-size:24px 24px;color:var(--ink);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  body{margin:0;font-family:'Space Grotesk',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);background-image:radial-gradient(circle at 1px 1px, rgba(42,47,134,.05) 1px, transparent 0);background-size:24px 24px;color:var(--ink);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
   h1,h2,h3{margin:0;font-weight:700;letter-spacing:-.02em}
   button{font-family:inherit;cursor:pointer;border:none;background:none}
   input,select{font-family:inherit;font-size:15px}
   a{color:var(--blue)}
-  #landing{position:fixed;inset:0;z-index:500;background:var(--ink);display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto}
+  #landing{position:fixed;inset:0;z-index:500;background:linear-gradient(135deg,var(--blue-deep),var(--blue) 55%,#3A4099);display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto}
   .auth{width:100%;max-width:420px;background:var(--card);border-radius:18px;box-shadow:0 24px 70px rgba(0,0,0,.45);padding:32px;animation:rise .3s ease;position:relative;z-index:3}
   /* ===== robotics / automation motif ===== */
   .roboBg{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
@@ -55,8 +55,8 @@
   .afld{margin-bottom:14px}.afld label{display:block;font-size:12px;font-weight:700;color:var(--slate);margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em}
   .afld input{width:100%;border:1px solid var(--line);border-radius:11px;padding:13px 14px;font-size:15px}
   .afld input:focus{outline:none;border-color:var(--orange);box-shadow:0 0 0 3px rgba(224,116,30,.16)}
-  .abtn{width:100%;background:var(--ink);color:#F6F3EC;border-radius:11px;padding:14px;font-weight:600;font-size:15px;margin-top:6px}
-  .abtn:active{background:#2c2519}.abtn.org{background:var(--orange);color:#fff}
+  .abtn{width:100%;background:var(--blue);color:#fff;border-radius:11px;padding:14px;font-weight:600;font-size:15px;margin-top:6px}
+  .abtn:active{background:var(--blue-deep)}.abtn.org{background:var(--orange);color:#fff}
   .amsg{font-size:13px;padding:11px 13px;border-radius:10px;margin-bottom:14px;display:none}
   .amsg.err{background:var(--danger-bg);color:var(--danger);display:block}.amsg.ok{background:var(--ok-bg);color:var(--ok);display:block}
   .modetag{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;margin-bottom:18px}
@@ -150,7 +150,7 @@
   .lockbtn{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);color:#fff;border-radius:8px;padding:6px 10px;font-size:12px;font-weight:600}.lockbtn.unlocked{background:var(--orange);border-color:var(--orange)}
   .logout{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);color:#fff;border-radius:8px;padding:6px 9px;font-size:12px}
   .wrap{max-width:1120px;margin-left:var(--sbw);padding:22px 26px 48px}
-  .scanbar{background:var(--ink);border-radius:var(--radius);padding:18px;color:#F6F3EC;margin-bottom:16px}
+  .scanbar{background:linear-gradient(120deg,var(--blue),var(--blue-deep));border-radius:var(--radius);padding:18px;color:#fff;margin-bottom:16px;box-shadow:var(--shadow)}
   .scanbar .row{display:flex;gap:10px;align-items:center}
   .bigscan{flex:1;background:var(--orange);color:#fff;border-radius:12px;padding:16px;font-size:17px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:9px}.bigscan:active{background:#b5631b}
   .scanbar input{flex:1;background:rgba(255,255,255,.96);border:none;border-radius:10px;padding:13px 14px;font-size:16px;font-weight:600;color:var(--ink)}
@@ -195,8 +195,8 @@
     .mobmods .mm.active{color:#fff;background:var(--orange)}
     .mobmods .mm:active{transform:scale(.92)}
   }
-  .sechd{display:flex;align-items:center;gap:13px;margin:4px 0 20px;padding-bottom:16px;border-bottom:2px solid var(--line-ink)}
-  .sechd .ic{width:42px;height:42px;border-radius:11px;background:var(--ink);color:var(--orange);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+  .sechd{display:flex;align-items:center;gap:13px;margin:4px 0 20px;padding-bottom:16px;border-bottom:2px solid var(--line)}
+  .sechd .ic{width:42px;height:42px;border-radius:11px;background:linear-gradient(135deg,var(--blue),var(--blue-deep));color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
   .sechd .tt{font-size:24px;font-weight:700;letter-spacing:-.03em;line-height:1.02}
   .sechd .cr{font-family:var(--mono);font-size:10.5px;color:var(--slate);font-weight:600;text-transform:uppercase;letter-spacing:.12em;margin-bottom:2px}
   @keyframes panelin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
@@ -224,10 +224,10 @@
   .toolbar input[type=search]{flex:1;min-width:170px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;box-shadow:var(--shadow)}
   .toolbar select{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 13px;color:var(--ink);box-shadow:var(--shadow)}
   .toolbar input:focus,.toolbar select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(43,90,166,.16)}
-  .btn{background:var(--ink);color:#F6F3EC;border-radius:11px;padding:12px 18px;font-weight:600;font-size:14px;display:inline-flex;align-items:center;gap:7px;box-shadow:none;transition:transform .1s,filter .16s,background .16s}
-  .btn:hover{background:#2c2519}.btn:active{transform:translateY(1px)}
-  .btn.orange{background:var(--orange);color:#fff}.btn.green{background:var(--ok);color:#fff}.btn.purple{background:var(--purple);color:#fff}.btn.red{background:var(--danger);color:#fff}
-  .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line-ink);box-shadow:none}.btn:disabled{opacity:.4;cursor:not-allowed;box-shadow:none}.btn.sm{padding:9px 13px;font-size:13px;border-radius:9px}
+  .btn{background:var(--blue);color:#fff;border-radius:11px;padding:12px 18px;font-weight:600;font-size:14px;display:inline-flex;align-items:center;gap:7px;box-shadow:0 2px 8px rgba(42,47,134,.22);transition:transform .1s,filter .16s,background .16s}
+  .btn:hover{filter:brightness(1.08)}.btn:active{transform:translateY(1px)}
+  .btn.orange{background:var(--orange);color:#fff;box-shadow:0 2px 8px rgba(224,116,30,.26)}.btn.green{background:var(--ok);color:#fff}.btn.purple{background:var(--purple);color:#fff}.btn.red{background:var(--danger);color:#fff}
+  .btn.ghost{background:#fff;color:var(--blue);border:1px solid var(--line);box-shadow:var(--shadow)}.btn:disabled{opacity:.4;cursor:not-allowed;box-shadow:none}.btn.sm{padding:9px 13px;font-size:13px;border-radius:9px}
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
   .part{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:17px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:11px}
   .part .head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
@@ -241,7 +241,7 @@
   .stbtn.add{background:var(--ok-bg);color:var(--ok)}.stbtn.rem{background:var(--danger-bg);color:var(--danger)}.stbtn.res{background:var(--purple-bg);color:var(--purple)}.stbtn.edit{background:var(--blue-soft);color:var(--blue);flex:0 0 46px}.stbtn.cart{background:var(--orange);color:#fff}
   .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}.panel.pad{padding:18px}
   table{width:100%;border-collapse:collapse;font-size:13.5px}
-  th{text-align:left;padding:11px 15px;background:transparent;color:var(--slate);font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;font-weight:600;border-bottom:2px solid var(--line-ink);font-family:var(--mono)}
+  th{text-align:left;padding:11px 15px;background:var(--blue-soft);color:var(--blue);font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;border-bottom:2px solid var(--line);font-family:var(--mono)}
   td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}tr:last-child td{border-bottom:none}
   .tdir{font-weight:700;font-size:13px;font-family:var(--mono)}.tin{color:var(--ok)}.tout{color:var(--danger)}.tref{font-family:var(--mono);font-size:12px;color:var(--slate)}
   .empty{text-align:center;padding:50px 20px;color:var(--slate)}.empty .ico{font-size:40px;margin-bottom:10px}.empty h3{color:var(--ink);margin-bottom:6px}
@@ -446,6 +446,7 @@
       <div class="tab" data-tab="po" onclick="setTab('po')">&#128203; Purchase Orders</div>
       <div class="tab" data-tab="locations" onclick="setTab('locations')">&#128205; Locations</div>
       <div class="tab" data-tab="transfer" onclick="setTab('transfer')">&#128256; Transfer</div>
+      <div class="tab" data-tab="assets" onclick="setTab('assets')">&#127991;&#65039; Assets</div>
       <div class="tab" data-tab="usage" onclick="setTab('usage')">&#128202; By Project</div>
       <div class="tab" data-tab="valuation" onclick="setTab('valuation')">&#128181; Valuation</div>
       <div class="tab" data-tab="billing" onclick="setTab('billing')">&#129534; Billing</div>
@@ -524,6 +525,15 @@
     </div>
     <div id="tab-transfer" style="display:none"><div class="panel pad"><h2 style="font-size:17px">Stock Transfer</h2><div class="sub" style="color:var(--slate);font-size:13px;margin:4px 0 14px">Move stock between locations.</div><div class="fld"><label>Part</label><select id="trPart"></select></div><div class="two"><div class="fld"><label>From</label><input id="trFrom" readonly></div><div class="fld"><label>To location</label><input id="trTo" list="locList" placeholder="Surat site"></div></div><div class="fld"><label>Quantity</label><input id="trQty" type="number" value="1" min="1"></div><button class="btn purple" onclick="postTransfer()">&#128256; Post Transfer</button></div></div>
     <div id="tab-usage" style="display:none"><div class="panel"><table><thead><tr><th>Project / Job</th><th>Items</th><th>Units</th><th>Value</th></tr></thead><tbody id="usageBody"></tbody></table></div></div>
+    <div id="tab-assets" style="display:none">
+      <div class="toolbar noprint">
+        <input type="search" id="assetSearch" placeholder="Search tag, serial, model, project..." oninput="renderAssets()">
+        <select id="assetStatusF" onchange="renderAssets()"><option value="">All statuses</option><option>In Stock</option><option>Deployed</option><option>Under Repair</option><option>Retired</option></select>
+        <button class="btn orange" onclick="openAsset()">&#65291; Register Asset</button>
+      </div>
+      <div class="dashgrid" id="assetKpis" style="margin-bottom:16px"></div>
+      <div id="assetList"></div>
+    </div>
     <div id="tab-valuation" style="display:none">
       <div class="toolbar noprint"><button class="btn ghost" onclick="printValuation()">&#128424; Print report</button><button class="btn" onclick="exportXLSX()">&#128229; Full Excel</button><div style="flex:1"></div><span style="font-family:var(--mono);font-size:11px;color:var(--slate);align-self:center" id="valAsOf"></span></div>
       <div id="valView"></div>
@@ -581,6 +591,17 @@
 <div class="modal-acts"><button class="btn" onclick="savePO()">Create PO &amp; PDF</button></div></div></div>
 <div class="modal-bg" id="poScanModal"><div class="modal" style="position:relative"><span class="close" onclick="closePoScan()">&times;</span><h2>Scan part QR</h2><div class="sub">Scan a part's QR to add it to the order. Scan again to increase quantity.</div><div id="poReader" style="width:100%"></div></div></div>
 <div class="modal-bg" id="locModal"><div class="modal" style="position:relative"><span class="close" onclick="closeModal('locModal')">&times;</span><h2 id="locTitle">Add Location</h2><div class="sub">A bin, drawer, rack or cupboard where stock is stored.</div><div class="two"><div class="fld"><label>Location name *</label><input id="lcName" placeholder="e.g. Rack A-3 / Cupboard 2" oninput="renderLocQrPreview()"></div><div class="fld"><label>Type</label><select id="lcType"><option>Bin</option><option>Drawer</option><option>Rack</option><option>Cupboard</option><option>Shelf</option><option>Area</option></select></div></div><div class="fld"><label>Notes (optional)</label><input id="lcNotes" placeholder="e.g. near assembly line"></div><div id="lcQrWrap" style="display:none;text-align:center;background:var(--blue-soft);border-radius:14px;padding:16px;margin-bottom:13px"><div style="font-size:11px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Bin QR &mdash; print &amp; stick on the bin</div><div id="lcQr" style="display:inline-block;background:#fff;padding:10px;border-radius:12px;box-shadow:var(--shadow)"></div><div style="margin-top:10px"><button class="btn sm ghost" onclick="printLocQR(encodeURIComponent(document.getElementById('lcName').value.trim()))">&#9559; Print this QR</button></div></div><div class="modal-acts"><button id="lcDelete" class="btn ghost" style="color:var(--danger);display:none" onclick="delLoc()">Delete</button><button class="btn" onclick="saveLoc()">Save</button></div></div></div>
+<div class="modal-bg" id="assetModal"><div class="modal" style="position:relative"><span class="close" onclick="closeModal('assetModal')">&times;</span><h2 id="assetTitle">Register Asset</h2><div class="sub">Track an individual serialized unit — any high-value item you want to follow by tag.</div>
+  <div class="two"><div class="fld"><label>Asset tag *</label><input id="asTag" placeholder="CESS-AST-00001"></div><div class="fld"><label>Serial no. (manufacturer)</label><input id="asSerial" placeholder="e.g. SN-88245-A"></div></div>
+  <div class="fld"><label>Item name / model *</label><input id="asName" placeholder="e.g. Servo Drive 750W" list="assetPartList"><datalist id="assetPartList"></datalist></div>
+  <div class="two"><div class="fld"><label>Linked SKU (optional)</label><input id="asSku" placeholder="SVO-750" list="skuList"></div><div class="fld"><label>Make / brand</label><input id="asMake" placeholder="e.g. Delta"></div></div>
+  <div class="two"><div class="fld"><label>Status</label><select id="asStatus"><option>In Stock</option><option>Deployed</option><option>Under Repair</option><option>Retired</option></select></div><div class="fld"><label>Assigned to (project / customer / location)</label><input id="asAssigned" placeholder="e.g. ASAL Cell-02" list="projList"></div></div>
+  <div class="two"><div class="fld"><label>Purchase date</label><input id="asBuyDate" type="date"></div><div class="fld"><label>Value (Rs)</label><input id="asValue" type="number" min="0" step="1" placeholder="0"></div></div>
+  <div class="two"><div class="fld"><label>Warranty end</label><input id="asWarranty" type="date"></div><div class="fld"><label>Calibration / service due</label><input id="asCalib" type="date"></div></div>
+  <div class="fld"><label>PO / supplier ref</label><input id="asPo" placeholder="PO number or supplier"></div>
+  <div class="fld"><label>Notes</label><input id="asNotes" placeholder="condition, location detail, etc."></div>
+  <div class="modal-acts"><button id="asDelete" class="btn ghost" style="color:var(--danger);display:none" onclick="delAsset()">Delete</button><button class="btn" onclick="saveAsset()">Save asset</button></div>
+</div></div>
 <div class="scanflash" id="scanflash">&#10003; Added</div>
 <div class="toast" id="toast"></div>
 <script>
@@ -597,17 +618,17 @@ const CLOUD_URL='https://petdrwsueedgvijmpvwz.supabase.co';
 const CLOUD_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBldGRyd3N1ZWVkZ3Zpam1wdnd6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0Mzk3NDksImV4cCI6MjA5ODAxNTc0OX0.sfQgW-9skysKiOngpq5TLBj_BGbL0ZHVybwf3dqpuGI';
 function cloudConfigured(){return CLOUD_URL&&CLOUD_KEY&&CLOUD_KEY.indexOf('PASTE_')!==0;}
 const CATS=['Fasteners','Pneumatic','Electrical','EOAT / Gripper','Cables & Connectors','Sensors','Mechanical','Consumables','Safety','Misc'];
-const ALL_TABS=[['dashboard','Dashboard'],['stock','Stock'],['ledger','Ledger'],['challans','Challans'],['visitors','Gate Pass'],['gate','Gate Approve'],['reorder','Reorder'],['bom','BOM'],['inward','Goods-in'],['po','Purchase Orders'],['locations','Locations'],['transfer','Transfer'],['usage','By Project'],['valuation','Valuation'],['billing','Billing'],['suppliers','Suppliers'],['stocktake','Stock-take'],['qr','QR Sheet'],['data','Excel']];
-const ALL_POWERS=[['addPart','Add / edit parts'],['issue','Issue stock (OUT)'],['receive','Receive stock (IN)'],['return','Return returnable stock'],['gateApprove','Approve gate passes'],['visitorPass','Create visitor gate passes'],['reserve','Reserve stock'],['purchase','Create purchase orders'],['billing','Create bills / invoices'],['seePrice','See prices'],['editBom','Edit BOMs'],['stocktake','Post stock-take'],['transfer','Do transfers'],['delete','Delete records'],['exportData','Export / import Excel']];
+const ALL_TABS=[['dashboard','Dashboard'],['stock','Stock'],['ledger','Ledger'],['challans','Challans'],['visitors','Gate Pass'],['gate','Gate Approve'],['reorder','Reorder'],['bom','BOM'],['inward','Goods-in'],['po','Purchase Orders'],['locations','Locations'],['transfer','Transfer'],['assets','Assets'],['usage','By Project'],['valuation','Valuation'],['billing','Billing'],['suppliers','Suppliers'],['stocktake','Stock-take'],['qr','QR Sheet'],['data','Excel']];
+const ALL_POWERS=[['addPart','Add / edit parts'],['issue','Issue stock (OUT)'],['receive','Receive stock (IN)'],['return','Return returnable stock'],['gateApprove','Approve gate passes'],['visitorPass','Create visitor gate passes'],['reserve','Reserve stock'],['purchase','Create purchase orders'],['billing','Create bills / invoices'],['seePrice','See prices'],['editBom','Edit BOMs'],['stocktake','Post stock-take'],['transfer','Do transfers'],['assets','Manage serialized assets'],['delete','Delete records'],['exportData','Export / import Excel']];
 // Modules group the tabs. Admin can grant any tab to any user regardless of module.
-const MODULES=[['inventory','\uD83D\uDCE6 Inventory',['stock','ledger','reorder','bom','inward','po','locations','transfer','suppliers','stocktake','qr','data']],['gatepass','\uD83D\uDCCB Dispatch',['challans','visitors','gate']],['billing','\uD83E\uDDFE Billing',['billing','usage','valuation']],['admin','\u2699\uFE0F Admin',['admin','dashboard','po','valuation','audit']]];
+const MODULES=[['inventory','\uD83D\uDCE6 Inventory',['stock','ledger','reorder','bom','inward','po','locations','transfer','assets','suppliers','stocktake','qr','data']],['gatepass','\uD83D\uDCCB Dispatch',['challans','visitors','gate']],['billing','\uD83E\uDDFE Billing',['billing','usage','valuation']],['admin','\u2699\uFE0F Admin',['admin','dashboard','po','valuation','audit']]];
 function moduleOf(tab){for(const m of MODULES)if(m[2].includes(tab))return m[0];return 'inventory';}
 const PRESETS={
   admin:{tabs:ALL_TABS.map(t=>t[0]),powers:ALL_POWERS.map(p=>p[0])},
   manager:{tabs:['dashboard','stock','ledger','challans','visitors','gate','reorder','bom','inward','po','transfer','usage','billing','suppliers','stocktake','qr','data'],powers:['addPart','issue','receive','return','gateApprove','visitorPass','reserve','purchase','billing','seePrice','editBom','stocktake','transfer','exportData']},
   operator:{tabs:['stock','ledger','challans','visitors','qr'],powers:['issue','visitorPass']}
 };
-let DB={parts:[],txns:[],suppliers:[],boms:[],reserves:[],challans:[],invoices:[],gatepasses:[],grns:[],pos:[],locations:[],audit:[],company:{}};
+let DB={parts:[],txns:[],suppliers:[],boms:[],reserves:[],challans:[],invoices:[],gatepasses:[],grns:[],pos:[],locations:[],assets:[],audit:[],company:{}};
 let currentModule='inventory';
 let editingSku=null,txnSku=null,txnDir='OUT',editingSup=null,resSku=null,editingUser=null;
 let pricesUnlocked=false,qrMode='part',adminProfs=[];
@@ -672,12 +693,12 @@ function applyPerms(){
   if(!active||active.style.display==='none'){const first=[...document.querySelectorAll('#tabbar .tab')].find(t=>t.style.display!=='none');if(first)setTab(first.dataset.tab);}
 }
 
-async function cloudLoadAll(){invalidateIdx();const tables=['parts','txns','suppliers','boms','reserves','challans','invoices','gatepasses','grns','pos','locations','audit'];for(const t of tables){try{const {data}=await sb.from(t).select('*');DB[t]=(data||[]).map(r=>r.data?{...r.data,_id:r.id}:r);}catch(e){DB[t]=[];}}
+async function cloudLoadAll(){invalidateIdx();const tables=['parts','txns','suppliers','boms','reserves','challans','invoices','gatepasses','grns','pos','locations','assets','audit'];for(const t of tables){try{const {data}=await sb.from(t).select('*');DB[t]=(data||[]).map(r=>r.data?{...r.data,_id:r.id}:r);}catch(e){DB[t]=[];}}
   try{const {data}=await sb.from('settings').select('*').eq('key','company').single();DB.company=data&&data.value?data.value:{...DEFAULT_COMPANY};}catch(e){DB.company={...DEFAULT_COMPANY};}
   if(DB.parts.length===0&&me.role==='admin')await cloudSeed();}
 async function cloudSeed(){const s=defaultSeed();for(const p of s.parts)await sb.from('parts').insert({sku:p.sku,data:p});for(const t of s.txns)await sb.from('txns').insert({data:t});for(const x of s.suppliers)await sb.from('suppliers').insert({data:x});for(const b of s.boms)await sb.from('boms').insert({data:b});await cloudLoadAll();}
 let _rtPending={},_rtTimer=null;
-function subscribeRealtime(){['parts','txns','suppliers','boms','reserves','challans','invoices','gatepasses','grns','pos','locations'].forEach(t=>{sb.channel('rt_'+t).on('postgres_changes',{event:'*',schema:'public',table:t},()=>{_rtPending[t]=1;clearTimeout(_rtTimer);_rtTimer=setTimeout(flushRealtime,450);}).subscribe();});}
+function subscribeRealtime(){['parts','txns','suppliers','boms','reserves','challans','invoices','gatepasses','grns','pos','locations','assets'].forEach(t=>{sb.channel('rt_'+t).on('postgres_changes',{event:'*',schema:'public',table:t},()=>{_rtPending[t]=1;clearTimeout(_rtTimer);_rtTimer=setTimeout(flushRealtime,450);}).subscribe();});}
 async function flushRealtime(){const tabs=Object.keys(_rtPending);_rtPending={};for(const t of tabs){try{const {data}=await sb.from(t).select('*');DB[t]=(data||[]).map(r=>r.data?{...r.data,_id:r.id}:r);}catch(e){}}invalidateIdx();renderAll();}
 async function cloudInsert(table,obj){const {data}=await sb.from(table).insert({data:obj}).select().single();return data?data.id:null;}
 async function cloudUpdateByNo(table,no,obj){const ex=DB[table].find(x=>x.no===no);if(ex&&ex._id){const {error}=await sb.from(table).update({data:strip(obj)}).eq('id',ex._id);if(error)throw error;}else{const {error}=await sb.from(table).update({data:strip(obj)}).eq('data->>no',no);if(error)throw error;}}
@@ -685,7 +706,7 @@ async function cloudUpdateBySku(table,sku,obj){await sb.from(table).update({data
 async function cloudDeleteBySku(table,sku){await sb.from(table).delete().eq('sku',sku);}
 async function cloudDeleteById(table,id){await sb.from(table).delete().eq('id',id);}
 async function cloudRefresh(table){const {data}=await sb.from(table).select('*');DB[table]=(data||[]).map(r=>r.data?{...r.data,_id:r.id}:r);invalidateIdx();}
-function loadLocal(){try{const j=localStorage.getItem(LOCAL_KEY);if(j)DB=JSON.parse(j);}catch(e){}['parts','txns','suppliers','boms','reserves','challans','invoices','gatepasses','grns','pos','locations','audit'].forEach(k=>DB[k]=DB[k]||[]);if(!DB.company)DB.company={...DEFAULT_COMPANY};if(DB.parts.length===0){const s=defaultSeed();DB.parts=s.parts;DB.txns=s.txns;DB.suppliers=s.suppliers;DB.boms=s.boms;saveLocal();}}
+function loadLocal(){try{const j=localStorage.getItem(LOCAL_KEY);if(j)DB=JSON.parse(j);}catch(e){}['parts','txns','suppliers','boms','reserves','challans','invoices','gatepasses','grns','pos','locations','assets','audit'].forEach(k=>DB[k]=DB[k]||[]);if(!DB.company)DB.company={...DEFAULT_COMPANY};if(DB.parts.length===0){const s=defaultSeed();DB.parts=s.parts;DB.txns=s.txns;DB.suppliers=s.suppliers;DB.boms=s.boms;saveLocal();}}
 function saveLocal(){invalidateIdx();try{localStorage.setItem(LOCAL_KEY,JSON.stringify(DB));}catch(e){toast('Save failed',true);}}
 
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
@@ -782,6 +803,51 @@ function valuationHTML(forPrint){
 function renderValuation(){const box=document.getElementById('valView');if(!box)return;const el=document.getElementById('valAsOf');if(el)el.textContent='As of '+new Date().toLocaleString('en-IN');
   if(!showPrice()){box.innerHTML='<div class="panel pad" style="text-align:center;padding:40px"><div style="font-size:34px">\uD83D\uDD12</div><h3 style="margin:10px 0 4px">Prices are locked</h3><div style="color:var(--slate);font-size:13.5px;margin-bottom:16px">Valuation needs unit costs. Unlock prices to view the report.</div><button class="btn orange" onclick="toggleLock();renderValuation()">Unlock prices</button></div>';return;}
   box.innerHTML='<div class="panel pad">'+valuationHTML(false)+'</div>';}
+// ===== SERIALIZED ASSET TRACKING =====
+let editingAsset=null;
+function nextAssetTag(){let max=0;for(const a of DB.assets){const m=/CESS-AST-(\d+)/.exec(a.tag||'');if(m)max=Math.max(max,parseInt(m[1]));}return 'CESS-AST-'+String(max+1).padStart(5,'0');}
+function assetStatusClass(s){return s==='Deployed'?'ok':(s==='Under Repair'?'warn':(s==='Retired'?'muted':'blue'));}
+function daysTo(d){if(!d)return null;return Math.round((new Date(d).getTime()-Date.now())/864e5);}
+function openAsset(id){if(!can('assets')&&me.role!=='admin'){toast('No permission',true);return;}editingAsset=id||null;const a=id?DB.assets.find(x=>x.id===id):null;
+  document.getElementById('assetTitle').textContent=a?'Edit Asset':'Register Asset';
+  document.getElementById('assetPartList').innerHTML=DB.parts.map(p=>'<option value="'+esc(p.name)+'">').join('');
+  const g=(k,v)=>{document.getElementById(k).value=v||'';};
+  g('asTag',a?a.tag:nextAssetTag());g('asSerial',a&&a.serial);g('asName',a&&a.name);g('asSku',a&&a.sku);g('asMake',a&&a.make);
+  document.getElementById('asStatus').value=a?a.status:'In Stock';g('asAssigned',a&&a.assigned);g('asBuyDate',a&&a.buyDate);
+  g('asValue',a&&a.value);g('asWarranty',a&&a.warranty);g('asCalib',a&&a.calib);g('asPo',a&&a.po);g('asNotes',a&&a.notes);
+  document.getElementById('asDelete').style.display=(a&&(can('delete')||me.role==='admin'))?'inline-flex':'none';
+  open('assetModal');}
+async function saveAsset(){const tag=document.getElementById('asTag').value.trim();const name=document.getElementById('asName').value.trim();
+  if(!tag){toast('Asset tag required',true);return;}if(!name){toast('Item name required',true);return;}
+  const dup=DB.assets.find(a=>a.tag===tag&&a.id!==editingAsset);if(dup){toast('Tag already exists',true);return;}
+  const v=id=>document.getElementById(id).value.trim();
+  const rec={id:editingAsset||uid(),tag,serial:v('asSerial'),name,sku:v('asSku'),make:v('asMake'),status:document.getElementById('asStatus').value,assigned:v('asAssigned'),buyDate:v('asBuyDate'),value:parseFloat(v('asValue'))||0,warranty:v('asWarranty'),calib:v('asCalib'),po:v('asPo'),notes:v('asNotes'),ts:Date.now()};
+  if(editingAsset){const ex=DB.assets.find(x=>x.id===editingAsset);if(CLOUD&&ex&&ex._id){rec._id=ex._id;await sb.from('assets').update({data:strip(rec)}).eq('id',ex._id);await cloudRefresh('assets');}else{const i=DB.assets.findIndex(x=>x.id===editingAsset);DB.assets[i]=rec;saveLocal();}logAudit('edit','asset',tag+' \u00b7 '+name);}
+  else{if(CLOUD){await cloudInsert('assets',rec);await cloudRefresh('assets');}else{DB.assets.push(rec);saveLocal();}logAudit('create','asset',tag+' \u00b7 '+name);}
+  closeModal('assetModal');renderAssets();toast('Asset saved',false,'good');}
+async function delAsset(){if(!editingAsset)return;if(!(can('delete')||me.role==='admin')){toast('No permission',true);return;}const a=DB.assets.find(x=>x.id===editingAsset);if(!a)return;if(!confirm('Delete asset "'+a.tag+'"?'))return;
+  if(CLOUD&&a._id){await cloudDeleteById('assets',a._id);await cloudRefresh('assets');}else{DB.assets=DB.assets.filter(x=>x.id!==editingAsset);saveLocal();}
+  closeModal('assetModal');renderAssets();logAudit('delete','asset',a.tag);toast('Asset deleted',false);}
+function renderAssets(){const box=document.getElementById('assetList');if(!box)return;
+  const q=(document.getElementById('assetSearch').value||'').trim().toLowerCase();
+  const sf=document.getElementById('assetStatusF').value;
+  const kpi=document.getElementById('assetKpis');
+  const all=DB.assets||[];
+  const counts={'In Stock':0,'Deployed':0,'Under Repair':0,'Retired':0};let warnSoon=0;
+  all.forEach(a=>{counts[a.status]=(counts[a.status]||0)+1;const dw=daysTo(a.warranty),dc=daysTo(a.calib);if((dw!=null&&dw<30&&dw>-100000)||(dc!=null&&dc<30))warnSoon++;});
+  if(kpi)kpi.innerHTML=[['Total',all.length,'var(--blue)'],['Deployed',counts['Deployed']||0,'var(--ok)'],['In Stock',counts['In Stock']||0,'var(--slate)'],['Warranty/Calib due',warnSoon,'var(--orange)']].map(k=>'<div class="dashkpi"><div style="font-family:var(--mono);font-size:23px;font-weight:700;color:'+k[2]+'">'+k[1]+'</div><div style="font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--slate);margin-top:4px;font-weight:600">'+k[0]+'</div></div>').join('');
+  let rows=all.filter(a=>{if(sf&&a.status!==sf)return false;if(!q)return true;return [a.tag,a.serial,a.name,a.sku,a.make,a.assigned].some(x=>(x||'').toLowerCase().includes(q));});
+  rows.sort((a,b)=>(a.tag||'').localeCompare(b.tag||''));
+  if(!rows.length){box.innerHTML='<div class="panel pad" style="text-align:center;padding:44px"><svg class="roboEmpty" width="54" height="54" viewBox="0 0 100 100" fill="none" stroke="#8B90C8" stroke-width="4" stroke-linecap="round"><rect x="30" y="34" width="40" height="34" rx="7"/><rect x="42" y="46" width="16" height="10" rx="2" fill="#F0A65A" stroke="none"/><path d="M50 34 V22"/><circle cx="50" cy="18" r="4" fill="#F0A65A" stroke="none"/><path d="M30 50 H20 M70 50 H80"/></svg><h3 style="margin:6px 0 4px">No assets yet</h3><div style="color:var(--slate);font-size:13.5px;margin-bottom:14px">Register your first serialized unit \u2014 drives, controllers, PLCs, cameras, gauges, laptops, anything.</div><button class="btn orange" onclick="openAsset()">\uFF0B Register Asset</button></div>';return;}
+  const badge=(txt,cls)=>{const map={ok:'var(--ok-bg);color:var(--ok)',warn:'var(--warn-bg);color:var(--warn)',blue:'var(--blue-soft);color:var(--blue)',muted:'#EEE;color:#888'};return '<span style="font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;background:'+(map[cls]||map.blue)+'">'+txt+'</span>';};
+  box.innerHTML='<div style="display:grid;gap:10px">'+rows.map(a=>{
+    const dw=daysTo(a.warranty),dc=daysTo(a.calib);
+    const flags=[];
+    if(dw!=null&&dw<0)flags.push(badge('Warranty expired','warn'));else if(dw!=null&&dw<30)flags.push(badge('Warranty '+dw+'d','warn'));
+    if(dc!=null&&dc<0)flags.push(badge('Calibration overdue','warn'));else if(dc!=null&&dc<30)flags.push(badge('Calib '+dc+'d','warn'));
+    return '<div class="part" onclick="openAsset(\''+a.id+'\')" style="cursor:pointer;flex-direction:row;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap"><div style="min-width:0"><div style="font-family:var(--mono);font-size:12px;color:var(--blue);font-weight:700">'+esc(a.tag)+'</div><div class="nm" style="margin-top:2px">'+esc(a.name)+(a.make?' <span style="color:var(--slate);font-weight:500">\u00b7 '+esc(a.make)+'</span>':'')+'</div><div style="font-size:12px;color:var(--slate);margin-top:3px">'+(a.serial?('S/N '+esc(a.serial)):'')+(a.assigned?(' \u00b7 '+esc(a.assigned)):'')+'</div></div><div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end">'+flags.join('')+badge(a.status,assetStatusClass(a.status))+'</div></div>';
+  }).join('')+'</div>';}
+
 function printValuation(){if(!showPrice()){toast('Unlock prices first',true);return;}printHTML('<div style="font-family:Space Grotesk,Arial,sans-serif;color:#17130D;padding:34px;max-width:900px;margin:0 auto">'+valuationHTML(true)+'</div>','Stock Valuation');logAudit('print','valuation','Stock valuation report');}
 function stars(n){n=Math.max(0,Math.min(5,n||0));let s='';for(let i=1;i<=5;i++)s+=i<=n?'\u2605':'<span class="off">\u2605</span>';return '<span class="stars">'+s+'</span>';}
 function renderSuppliers(){const grid=document.getElementById('supGrid');if(!DB.suppliers.length){grid.innerHTML='<div class="empty" style="grid-column:1/-1"><div class="ico">\uD83C\uDFED</div><h3>No suppliers</h3></div>';return;}grid.innerHTML=DB.suppliers.map(s=>{const cnt=DB.parts.filter(p=>p.sup===s.name).length;return '<div class="part"><div class="head"><div><div class="nm">'+esc(s.name)+'</div><div class="sku">'+cnt+' part type'+(cnt!==1?'s':'')+(s.rating?'  '+stars(s.rating):'')+'</div></div>'+(can('addPart')?'<button class="stbtn edit" onclick="openSupplier(\''+s.id+'\')">\u270E</button>':'')+'</div><div class="meta" style="flex-direction:column;align-items:flex-start;gap:6px">'+(s.contact?'<span>\uD83D\uDC64 <b>'+esc(s.contact)+'</b></span>':'')+(s.phone?'<span>\uD83D\uDCDE <a href="tel:'+esc(s.phone)+'" style="text-decoration:none"><b>'+esc(s.phone)+'</b></a></span>':'')+(s.email?'<span>\u2709\uFE0F '+esc(s.email)+'</span>':'')+(s.notes?'<span>\uD83D\uDCE6 '+esc(s.notes)+'</span>':'')+'</div></div>';}).join('');}
@@ -1231,6 +1297,8 @@ function exportXLSX(){if(!can('exportData'))return;try{if(!window.XLSX){toast('E
   add('Audit Log',aud,[20,16,14,20,52]);
   const valr=DB.parts.map(p=>{const h=Math.max(onHand(p.sku),0);return {SKU:p.sku,Name:p.name,Category:p.cat||'',Location:p.loc||'',OnHand:h,Unit:p.unit||'',UnitCost:p.cost||0,StockValue:Math.round(h*(p.cost||0)),LastBuy:(p.lastCost!=null?p.lastCost:'')};}).sort((a,b)=>b.StockValue-a.StockValue);
   add('Valuation',valr,[16,30,16,16,8,7,10,12,10]);
+  const asr=(DB.assets||[]).map(a=>({Tag:a.tag,Serial:a.serial||'',Item:a.name,Make:a.make||'',SKU:a.sku||'',Status:a.status,AssignedTo:a.assigned||'',Purchased:a.buyDate||'',Value:a.value||0,WarrantyEnd:a.warranty||'',CalibrationDue:a.calib||'',PORef:a.po||'',Notes:a.notes||''}));
+  add('Assets',asr,[16,16,26,14,14,13,20,12,10,12,14,14,30]);
   const co=DB.company||DEFAULT_COMPANY;add('Company',[{Field:'Company name',Value:co.name||''},{Field:'Registered office',Value:co.addr||''},{Field:'CIN',Value:co.cin||''},{Field:'GSTIN',Value:co.gst||''},{Field:'PAN',Value:co.pan||''},{Field:'State / Code',Value:(co.state||'')+(co.stateCode?(' / '+co.stateCode):'')},{Field:'Phone',Value:co.phone||''},{Field:'Email',Value:co.email||''},{Field:'Website',Value:co.web||''},{Field:'Exported',Value:new Date().toLocaleString('en-IN')}],[22,60]);
   const fn='CESS_Inventory_'+new Date().toISOString().slice(0,10)+'.xlsx';XLSX.writeFile(wb,fn);toast('Excel workbook exported',false,'good');logAudit('export','excel',fn);
   const drive=DB.company&&DB.company.driveUrl;if(drive){try{const b64=XLSX.write(wb,{bookType:'xlsx',type:'base64'});fetch(drive,{method:'POST',body:JSON.stringify({type:'file',name:fn,folder:'Excel',mime:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',data:b64})}).then(r=>r.json()).then(j=>{if(j&&j.url)toast('Also saved to Drive',false,'good');}).catch(()=>{});}catch(e){}}
@@ -1396,8 +1464,8 @@ function buildPOPDF(po){const {jsPDF}=window.jspdf;const doc=new jsPDF({unit:'mm
   doc.setDrawColor.apply(doc,LINE);doc.line(L,287,R,287);doc.setFontSize(6.8);doc.setTextColor.apply(doc,FAINT);doc.text('Computer-generated purchase order \u00B7 '+po.no,L,291);doc.text((co.name||'')+(co.web?('  \u00B7  '+co.web):''),W/2,294.5,{align:'center'});
   return doc;}
 function updateSectionHeader(t){const sh=document.getElementById('sechd');if(!sh)return;const ICONS={dashboard:'\uD83D\uDCCA',stock:'\uD83D\uDCE6',ledger:'\uD83D\uDCD2',challans:'\uD83D\uDCC4',visitors:'\uD83D\uDEC2',gate:'\uD83D\uDEA6',reorder:'\u21BB',bom:'\uD83E\uDDE9',inward:'\uD83D\uDCE5',po:'\uD83D\uDCCB',locations:'\uD83D\uDCCD',transfer:'\uD83D\uDD01',usage:'\uD83D\uDCC8',billing:'\uD83E\uDDFE',suppliers:'\uD83C\uDFED',stocktake:'\u2705',qr:'\u2317',data:'\uD83D\uDD04',admin:'\u2699\uFE0F',audit:'\uD83D\uDCDC'};const tab=ALL_TABS.find(x=>x[0]===t);const mod=MODULES.find(m=>m[2].includes(t));document.getElementById('sechdIc').innerHTML=ICONS[t]||'\uD83D\uDCC4';document.getElementById('sechdTitle').textContent=tab?tab[1]:t;document.getElementById('sechdCrumb').textContent=mod?mod[1].split(' ').slice(1).join(' '):'';}
-function setTab(t){if(t!=='stock'&&t!=='admin'&&!hasTab(t)){return;}if(t==='admin'&&me.role!=='admin')return;const curMod=MODULES.find(m=>m[0]===currentModule);if(!curMod||!curMod[2].includes(t))currentModule=moduleOf(t);buildModuleBar();refreshTabVisibility();if(window.innerWidth<=900){try{toggleSidebar(false);}catch(e){}}document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===t));['dashboard','stock','ledger','challans','visitors','gate','reorder','bom','inward','po','locations','transfer','usage','valuation','billing','suppliers','stocktake','qr','data','admin','audit'].forEach(x=>{const el=document.getElementById('tab-'+x);if(el)el.style.display=x===t?'':'none';});updateSectionHeader(t);const shown=document.getElementById('tab-'+t);if(shown){shown.classList.remove('panelin');void shown.offsetWidth;shown.classList.add('panelin');}document.getElementById('scanbar').style.display=(t==='stock')?'':'none';if(t==='dashboard')renderDashboard();if(t==='po')renderPOs();if(t==='locations')renderLocations();if(t==='ledger')renderLedger();if(t==='challans')renderChallans();if(t==='visitors')renderVisitors();if(t==='gate')renderGate();if(t==='reorder')renderReorder();if(t==='usage')renderUsage();if(t==='valuation')renderValuation();if(t==='billing'){buildBillProj();renderBilling();renderInvoices();}if(t==='suppliers')renderSuppliers();if(t==='stocktake')renderStocktake();if(t==='qr')renderQRSheet();if(t==='bom'){buildBomSel();renderBomDetail();}if(t==='transfer')buildTransfer();if(t==='inward')renderGrnDocs();if(t==='admin')renderAdmin();if(t==='audit')renderAudit();}
-function renderAll(){refreshKPIs();const vis=id=>{const e=document.getElementById(id);return e&&e.style.display!=='none';};if(vis('tab-dashboard'))renderDashboard();if(vis('tab-stock'))render();if(vis('tab-ledger'))renderLedger();if(vis('tab-reorder'))renderReorder();if(vis('tab-usage'))renderUsage();if(vis('tab-valuation'))renderValuation();if(vis('tab-suppliers'))renderSuppliers();if(vis('tab-stocktake'))renderStocktake();if(vis('tab-challans'))renderChallans();if(vis('tab-visitors'))renderVisitors();if(vis('tab-gate'))renderGate();if(vis('tab-inward'))renderGrnDocs();if(vis('tab-po'))renderPOs();if(vis('tab-locations'))renderLocations();if(vis('tab-billing')){buildBillProj();renderBilling();renderInvoices();}if(vis('tab-audit'))renderAudit();updateCartCount();}
+function setTab(t){if(t!=='stock'&&t!=='admin'&&!hasTab(t)){return;}if(t==='admin'&&me.role!=='admin')return;const curMod=MODULES.find(m=>m[0]===currentModule);if(!curMod||!curMod[2].includes(t))currentModule=moduleOf(t);buildModuleBar();refreshTabVisibility();if(window.innerWidth<=900){try{toggleSidebar(false);}catch(e){}}document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===t));['dashboard','stock','ledger','challans','visitors','gate','reorder','bom','inward','po','locations','transfer','assets','usage','valuation','billing','suppliers','stocktake','qr','data','admin','audit'].forEach(x=>{const el=document.getElementById('tab-'+x);if(el)el.style.display=x===t?'':'none';});updateSectionHeader(t);const shown=document.getElementById('tab-'+t);if(shown){shown.classList.remove('panelin');void shown.offsetWidth;shown.classList.add('panelin');}document.getElementById('scanbar').style.display=(t==='stock')?'':'none';if(t==='dashboard')renderDashboard();if(t==='po')renderPOs();if(t==='locations')renderLocations();if(t==='ledger')renderLedger();if(t==='challans')renderChallans();if(t==='visitors')renderVisitors();if(t==='gate')renderGate();if(t==='reorder')renderReorder();if(t==='usage')renderUsage();if(t==='valuation')renderValuation();if(t==='assets')renderAssets();if(t==='billing'){buildBillProj();renderBilling();renderInvoices();}if(t==='suppliers')renderSuppliers();if(t==='stocktake')renderStocktake();if(t==='qr')renderQRSheet();if(t==='bom'){buildBomSel();renderBomDetail();}if(t==='transfer')buildTransfer();if(t==='inward')renderGrnDocs();if(t==='admin')renderAdmin();if(t==='audit')renderAudit();}
+function renderAll(){refreshKPIs();const vis=id=>{const e=document.getElementById(id);return e&&e.style.display!=='none';};if(vis('tab-dashboard'))renderDashboard();if(vis('tab-stock'))render();if(vis('tab-ledger'))renderLedger();if(vis('tab-reorder'))renderReorder();if(vis('tab-usage'))renderUsage();if(vis('tab-valuation'))renderValuation();if(vis('tab-assets'))renderAssets();if(vis('tab-suppliers'))renderSuppliers();if(vis('tab-stocktake'))renderStocktake();if(vis('tab-challans'))renderChallans();if(vis('tab-visitors'))renderVisitors();if(vis('tab-gate'))renderGate();if(vis('tab-inward'))renderGrnDocs();if(vis('tab-po'))renderPOs();if(vis('tab-locations'))renderLocations();if(vis('tab-billing')){buildBillProj();renderBilling();renderInvoices();}if(vis('tab-audit'))renderAudit();updateCartCount();}
 let _searchTimer=null;function debouncedRender(){clearTimeout(_searchTimer);_searchTimer=setTimeout(render,150);}
 function buildFilters(){const cats=[...new Set([...CATS,...DB.parts.map(p=>p.cat).filter(Boolean)])];document.getElementById('catFilter').innerHTML='<option value="">All categories</option>'+cats.map(c=>'<option>'+esc(c)+'</option>').join('');document.getElementById('catList').innerHTML=cats.map(c=>'<option value="'+esc(c)+'">').join('');const locs=[...new Set([...((DB.locations||[]).map(l=>l.name)),...DB.parts.map(p=>p.loc)].filter(Boolean))].sort();const lf=document.getElementById('locFilter');if(lf){const cur=lf.value;lf.innerHTML='<option value="">All locations</option>'+locs.map(l=>'<option>'+esc(l)+'</option>').join('');lf.value=cur;}document.getElementById('locList').innerHTML=locs.map(l=>'<option value="'+esc(l)+'">').join('');}
 function buildSupList(){document.getElementById('supList').innerHTML=DB.suppliers.map(s=>'<option value="'+esc(s.name)+'">').join('');}
