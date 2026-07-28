@@ -1034,11 +1034,12 @@ function defaultSeed(){const parts=[],txns=[],suppliers=[{id:uid(),name:'Shree F
 
 let _idx=null;
 function invalidateIdx(){_idx=null;}
-function buildIdx(){const oh={},rv={},bs={};for(const p of DB.parts)bs[p.sku]=p;for(const t of DB.txns)oh[t.sku]=(oh[t.sku]||0)+(t.dir==='IN'?t.qty:-t.qty);for(const r of DB.reserves)rv[r.sku]=(rv[r.sku]||0)+r.qty;_idx={oh,rv,bs};}
+function skuKey(s){return String(s==null?'':s).trim().toLowerCase().replace(/\s+/g,'');}
+function buildIdx(){const oh={},rv={},bs={},bsN={};for(const p of DB.parts){bs[p.sku]=p;bsN[skuKey(p.sku)]=p;}for(const t of DB.txns)oh[t.sku]=(oh[t.sku]||0)+(t.dir==='IN'?t.qty:-t.qty);for(const r of DB.reserves)rv[r.sku]=(rv[r.sku]||0)+r.qty;_idx={oh,rv,bs,bsN};}
 function onHand(sku){if(!_idx)buildIdx();return _idx.oh[sku]||0;}
 function reserved(sku){if(!_idx)buildIdx();return _idx.rv[sku]||0;}
 function available(sku){return onHand(sku)-reserved(sku);}
-function partBySku(sku){if(!_idx)buildIdx();return _idx.bs[sku];}
+function partBySku(sku){if(!_idx)buildIdx();return _idx.bs[sku]||_idx.bsN[skuKey(sku)];}
 function status(p){const q=onHand(p.sku);if(q<=0)return'out';if(q<=p.min)return'low';return'ok';}
 function fmt(n){return n.toLocaleString('en-IN');}
 function money(n){return 'Rs '+Math.round(n).toLocaleString('en-IN');}
@@ -1155,8 +1156,20 @@ function globalSearch(){const inp=document.getElementById('gsearch'),box=documen
   box.style.display='block';}
 document.addEventListener('click',function(e){const w=document.getElementById('gsearchWrap');if(w&&!w.contains(e.target))closeGSearch();});
 function isSysProj(n){n=String(n||'');return !n||SYS_PROJ.indexOf(n)>=0||/^Return:/i.test(n)||/^HOLD::/.test(n)||/^Transfer/i.test(n);}
+// If a part was deleted after it was issued, fall back to its SKU prefix so the line still
+// lands in the right category instead of a single "Uncategorised" heap.
+const SKU_CAT_PREFIX={BOLT:'Fasteners',NUT:'Fasteners',SCR:'Fasteners',WSH:'Fasteners',FAS:'Fasteners',
+  PNU:'Pneumatic',AIR:'Pneumatic',CYL:'Pneumatic',
+  ELE:'Electrical',ELEC:'Electrical',PWR:'Electrical',SMPS:'Electrical',
+  CAB:'Cables & Connectors',CON:'Cables & Connectors',WIR:'Cables & Connectors',
+  SEN:'Sensors',PRX:'Sensors',
+  EOAT:'EOAT / Gripper',GRP:'EOAT / Gripper',
+  MEC:'Mechanical',MECH:'Mechanical',BRG:'Mechanical',
+  CNS:'Consumables',CON5:'Consumables',
+  SAF:'Safety'};
+function catFromSku(sku){const pre=String(sku||'').toUpperCase().split(/[^A-Z0-9]+/)[0];return SKU_CAT_PREFIX[pre]||'Uncategorised';}
 function projLines(name){const m={};for(const t of DB.txns){if((t.proj||'')!==name)continue;const d=t.dir==='OUT'?1:-1;m[t.sku]=(m[t.sku]||0)+d*t.qty;}
-  return Object.entries(m).filter(e=>e[1]>0).map(e=>{const p=partBySku(e[0]);return {sku:e[0],qty:e[1],name:p?p.name:e[0],cat:(p&&p.cat)||'Uncategorised',unit:(p&&p.unit)||'',cost:(p&&p.cost)||0};});}
+  return Object.entries(m).filter(e=>e[1]>0).map(e=>{const p=partBySku(e[0]);return {sku:e[0],qty:e[1],name:p?p.name:e[0],cat:(p&&p.cat)||catFromSku(e[0]),unit:(p&&p.unit)||'',cost:(p&&p.cost)||0};});}
 function renderUsage(){const box=document.getElementById('projList');if(!box)return;
   const q=(document.getElementById('projSearch')?document.getElementById('projSearch').value:'').toLowerCase();
   const names=[...new Set([...(DB.projects||[]).map(p=>p.name),...DB.txns.map(t=>t.proj).filter(Boolean)])].filter(x=>!isSysProj(x)).filter(x=>!q||x.toLowerCase().includes(q));
@@ -1168,7 +1181,7 @@ function showProject(enc){const nm=decodeURIComponent(enc);const box=document.ge
   let h='<div class="panel pad"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px"><div><h2 style="font-size:17px">📁 '+esc(nm)+'</h2><div style="color:var(--slate);font-size:13px">'+(reg&&reg.cust?('Customer: '+esc(reg.cust)+' · '):'')+lines.length+' part type(s)'+(showPrice()?(' · material cost '+fmtMoney(total)):'')+'</div></div><div style="display:flex;gap:8px;flex-wrap:wrap">'+
     '<button class="btn ghost" onclick="projPDF(&quot;'+encodeURIComponent(nm)+'&quot;,false)">📄 Customer PDF</button>'+
     (showPrice()?'<button class="btn orange" onclick="projPDF(&quot;'+encodeURIComponent(nm)+'&quot;,true)">💰 Internal PDF</button>':'')+
-    '<button class="btn green" onclick="projXLSX(&quot;'+encodeURIComponent(nm)+'&quot;)">📥 Excel</button>'+'<button class="btn purple" onclick="openBomMakerFor(&quot;'+encodeURIComponent(nm)+'&quot;)">\uD83E\uDDE9 Open in BOM Maker</button>'+
+    '<button class="btn green" onclick="projXLSX(&quot;'+encodeURIComponent(nm)+'&quot;)">📥 Excel</button>'+'<a class="btn purple" href="'+bomMakerHref()+'" target="_blank" rel="noopener" style="text-decoration:none" onclick="return prepBomMakerFor(&quot;'+encodeURIComponent(nm)+'&quot;)">\uD83E\uDDE9 Open in BOM Maker</a>'+
     '<button class="btn '+(reg&&reg.completed?'green':'ghost')+'" onclick="toggleProjectComplete(&quot;'+encodeURIComponent(nm)+'&quot;)">'+(reg&&reg.completed?'↺ Reopen project':'✓ Mark Complete')+'</button>'+
     '<button class="btn purple" onclick="openTaskFlow()">📋 TaskFlow</button></div></div>';
   if(!lines.length){h+='<div style="color:var(--slate);font-size:13px;margin-top:12px">Nothing issued to this project yet. Issue stock (OUT) with this project name and it appears here automatically.</div></div>';box.innerHTML=h;return;}
@@ -1787,10 +1800,17 @@ function renderBomDetail(){const id=document.getElementById('bomSel').value,box=
 // BOM Maker's own store (same origin) so it opens pre-filled and every column /
 // option the user already set up in BOM Maker is preserved.
 const BOM_MAKER_FILE='BOM-MAKER.html', BOM_MAKER_KEY='cessd_bom_pro_v5';
-function openBomMakerFor(enc){
+function bomMakerHref(){
+  if(location.protocol.indexOf('http')===0)return BOM_MAKER_FILE;
+  let base='';try{base=String((DB.company&&DB.company.appUrl)||'').trim().replace(/\/$/,'');}catch(e){}
+  return base?(base+'/'+BOM_MAKER_FILE):BOM_MAKER_FILE;
+}
+// Writes the project's material into BOM Maker's store, then lets the real <a target="_blank">
+// do the navigating — a native link in a user gesture is never popup-blocked, on phone or laptop.
+function prepBomMakerFor(enc){
   const nm=decodeURIComponent(enc);
   const groups=projGroups(nm);
-  if(!groups.length){toast('Nothing issued to '+nm+' yet \u2014 issue parts to it first',true);return;}
+  if(!groups.length){toast('Nothing issued to '+nm+' yet \u2014 issue parts to it first',true);return false;}
   const reg=projReg(nm)||{};
   const rid=function(){return Math.random().toString(36).slice(2,9);};
   const withRate=showPrice();
@@ -1807,21 +1827,20 @@ function openBomMakerFor(enc){
     step:(prev&&prev.step!=null)?prev.step:10};
   if(prev&&prev.opts)payload.opts=prev.opts;
   try{localStorage.setItem(BOM_MAKER_KEY,JSON.stringify(payload));}
-  catch(e){toast('Could not hand off to BOM Maker',true);return;}
+  catch(e){toast('Could not hand off to BOM Maker',true);return false;}
   try{logAudit('export','bom',nm+' \u2192 BOM Maker');}catch(e){}
   const total=cats.reduce(function(a,c){return a+c.items.length;},0);
   // Opened from a local file:// copy there is no BOM-MAKER.html next to it (and localStorage
   // is a different origin anyway) — so fall back to the hosted app URL.
-  let url=BOM_MAKER_FILE;
   if(location.protocol.indexOf('http')!==0){
     let base='';try{base=String((DB.company&&DB.company.appUrl)||'').trim().replace(/\/$/,'');}catch(e){}
-    if(!base){toast('Open the hosted site (not a downloaded copy) to use BOM Maker',true);return;}
-    url=base+'/'+BOM_MAKER_FILE;
+    if(!base){toast('Open the hosted site (not a downloaded copy) to use BOM Maker',true);return false;}
   }
   toast('BOM Maker: '+total+' item(s) in '+cats.length+' group(s) from '+nm,false,'good');
-  const w=window.open(url,'_blank');
-  if(!w)location.href=url;
+  return true;
 }
+// kept for older call sites / the global search
+function openBomMakerFor(enc){if(prepBomMakerFor(enc)===false)return;const w=window.open(bomMakerHref(),'_blank');if(!w)location.href=bomMakerHref();}
 function openBom(id){if(!can('editBom'))return;editingBom=id||null;bomDraft=[];
   const cats=[...new Set([...CATS,...DB.parts.map(p=>p.cat).filter(Boolean)])];
   document.getElementById('bomCatSel').innerHTML='<option value="">All categories</option>'+cats.map(c=>'<option>'+esc(c)+'</option>').join('');
