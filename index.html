@@ -572,7 +572,7 @@
       <div class="tab" data-tab="data" onclick="setTab('data')">&#128259; Excel</div>
       <div class="tab" data-tab="admin" onclick="setTab('admin')">&#9881;&#65039; Admin Panel</div>
       <div class="tab" data-tab="audit" onclick="setTab('audit')">&#128220; Audit Log</div>
-      <a class="tab" href="bom-maker.html" target="_blank" style="text-decoration:none">&#129513; BOM Maker (standalone)</a>
+      <a class="tab" href="BOM-MAKER.html" target="_blank" style="text-decoration:none">&#129513; BOM Maker (standalone)</a>
       <a class="tab" href="taskflow.html" target="_blank" style="text-decoration:none;margin-top:6px;border-top:1px solid var(--sidebar-line);border-radius:0 0 10px 10px;padding-top:12px">&#128203; TaskFlow ↗</a>
     </div>
   </aside>
@@ -1168,7 +1168,7 @@ function showProject(enc){const nm=decodeURIComponent(enc);const box=document.ge
   let h='<div class="panel pad"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px"><div><h2 style="font-size:17px">📁 '+esc(nm)+'</h2><div style="color:var(--slate);font-size:13px">'+(reg&&reg.cust?('Customer: '+esc(reg.cust)+' · '):'')+lines.length+' part type(s)'+(showPrice()?(' · material cost '+fmtMoney(total)):'')+'</div></div><div style="display:flex;gap:8px;flex-wrap:wrap">'+
     '<button class="btn ghost" onclick="projPDF(&quot;'+encodeURIComponent(nm)+'&quot;,false)">📄 Customer PDF</button>'+
     (showPrice()?'<button class="btn orange" onclick="projPDF(&quot;'+encodeURIComponent(nm)+'&quot;,true)">💰 Internal PDF</button>':'')+
-    '<button class="btn green" onclick="projXLSX(&quot;'+encodeURIComponent(nm)+'&quot;)">📥 Excel</button>'+'<button class="btn purple" onclick="openBomMakerFor(&quot;'+encodeURIComponent(nm)+'&quot;)">\uD83E\uDDE9 BOM Maker</button>'+
+    '<button class="btn green" onclick="projXLSX(&quot;'+encodeURIComponent(nm)+'&quot;)">📥 Excel</button>'+'<button class="btn purple" onclick="openBomMakerFor(&quot;'+encodeURIComponent(nm)+'&quot;)">\uD83E\uDDE9 Open in BOM Maker</button>'+
     '<button class="btn '+(reg&&reg.completed?'green':'ghost')+'" onclick="toggleProjectComplete(&quot;'+encodeURIComponent(nm)+'&quot;)">'+(reg&&reg.completed?'↺ Reopen project':'✓ Mark Complete')+'</button>'+
     '<button class="btn purple" onclick="openTaskFlow()">📋 TaskFlow</button></div></div>';
   if(!lines.length){h+='<div style="color:var(--slate);font-size:13px;margin-top:12px">Nothing issued to this project yet. Issue stock (OUT) with this project name and it appears here automatically.</div></div>';box.innerHTML=h;return;}
@@ -1782,12 +1782,45 @@ function renderGrnDocs(){const box=document.getElementById('grnDocs');if(!box)re
     return '<div class="challan-card"><div class="ci"><div class="cn">'+esc(d.ref)+' '+badge+'</div><div class="cm">'+when(d.ts)+' · '+esc(d.sup||'')+' · '+d.files+' file(s): '+d.pdfCount+' bill, '+d.imgCount+' photo · by '+esc(d.by)+'</div></div><div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">'+viewBits+noView+(d.status!=='received'&&can('receive')?'<button class="btn sm green" onclick="grnMarkReceived(\''+d.id+'\')">✓ Mark stocked</button>':'')+(me.role==='admin'?'<button class="btn sm red" onclick="delGrn(\''+d.id+'\')">🗑</button>':'')+'</div></div>';}).join('');}
 function buildBomSel(){document.getElementById('bomSel').innerHTML='<option value="">— Select a cell / BOM —</option>'+DB.boms.map(b=>'<option value="'+b.id+'">'+esc(b.name)+'</option>').join('');}
 function renderBomDetail(){const id=document.getElementById('bomSel').value,box=document.getElementById('bomDetail');if(!id){box.innerHTML='<div class="empty"><div class="ico">🧩</div><h3>Select or create a BOM</h3></div>';return;}const b=DB.boms.find(x=>x.id===id);let maxBuild=Infinity;const rows=b.lines.map(l=>{const p=partBySku(l.sku);const av=p?available(l.sku):0;maxBuild=Math.min(maxBuild,Math.floor(av/l.qty));const ok=av>=l.qty;return '<tr><td><b>'+(p?esc(p.name):esc(l.sku))+'</b><br><span class="tref">'+esc(l.sku)+'</span></td><td>'+l.qty+'</td><td>'+av+'</td><td class="availchk" style="color:'+(ok?'var(--ok)':'var(--danger)')+'">'+(ok?'✓':'short '+(l.qty-av))+'</td></tr>';}).join('');if(maxBuild===Infinity)maxBuild=0;const ed=can('editBom');box.innerHTML='<div class="panel pad"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px"><div><h2 style="font-size:17px">'+esc(b.name)+'</h2><div style="color:var(--slate);font-size:13px">'+(b.proj?('Project: <b>'+esc(b.proj)+'</b>'+(b.cust?' · '+esc(b.cust):'')+' · '):'')+'Buildable now: <b style="color:'+(maxBuild>0?'var(--ok)':'var(--danger)')+';font-size:16px">'+maxBuild+' cell'+(maxBuild!==1?'s':'')+'</b></div></div>'+(ed?'<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost" onclick="openBom(\''+b.id+'\')">✎ Edit</button><button class="btn ghost" onclick="bomPDF(\''+b.id+'\',false)">📄 Customer PDF</button>'+(showPrice()?'<button class="btn orange" onclick="bomPDF(\''+b.id+'\',true)">💰 Internal PDF</button>':'')+(b.proj?'<button class="btn purple" onclick="openTaskFlow(\''+encodeURIComponent(b.proj)+'\')">📋 TaskFlow</button>':'')+'<button class="btn red" onclick="issueBom(\''+b.id+'\')">Issue 1 cell</button><button class="btn purple" onclick="reserveBom(\''+b.id+'\')">Reserve 1 cell</button></div>':'')+'</div><table style="margin-top:12px"><thead><tr><th>Part</th><th>Need</th><th>Avail</th><th>Status</th></tr></thead><tbody>'+rows+'</tbody></table></div>';}
-function openBomMakerFor(enc){const nm=decodeURIComponent(enc);if(!can('editBom')){toast('No permission to edit BOMs',true);return;}setTab('bom');
-  const ex=DB.boms.find(function(b){return (b.proj||'')===nm||b.name===nm+' BOM';});
-  openBom(ex?ex.id:null);
-  if(!ex){document.getElementById('bomName').value=nm+' BOM';document.getElementById('bomProj').value=nm;
-    projLines(nm).forEach(function(l){bomDraft.push({sku:l.sku,qty:l.qty});});renderBomLines();
-    toast('Pre-filled from everything issued to '+nm+' \u2014 adjust and Save',false,'good');}
+// ===== HAND-OFF TO THE STANDALONE BOM MAKER =====
+// Everything issued to a project, grouped by part category, written straight into
+// BOM Maker's own store (same origin) so it opens pre-filled and every column /
+// option the user already set up in BOM Maker is preserved.
+const BOM_MAKER_FILE='BOM-MAKER.html', BOM_MAKER_KEY='cessd_bom_pro_v5';
+function openBomMakerFor(enc){
+  const nm=decodeURIComponent(enc);
+  const groups=projGroups(nm);
+  if(!groups.length){toast('Nothing issued to '+nm+' yet \u2014 issue parts to it first',true);return;}
+  const reg=projReg(nm)||{};
+  const rid=function(){return Math.random().toString(36).slice(2,9);};
+  const withRate=showPrice();
+  const cats=groups.map(function(g,gi){return {id:rid(),name:g.name,color:bomCatColor(gi),
+    items:g.items.map(function(it){return {id:rid(),part:it.sku||'',name:it.name||'',material:it.material||'\u2014',qty:String(it.qty||0),uom:it.unit||'Nos',rate:withRate?String(it.cost||''):'',remarks:''};})};});
+  let prev=null;try{prev=JSON.parse(localStorage.getItem(BOM_MAKER_KEY)||'null');}catch(e){}
+  const doc=Object.assign({},(prev&&prev.doc)||{},{
+    title:nm,project:nm,client:reg.cust||'Internal',
+    docno:reg.docNo||('CESS-BOM-'+String(nm).toUpperCase().replace(/[^A-Z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,18)),
+    rev:reg.rev||'A',date:new Date().toISOString().split('T')[0],sheet:'1 of 1',
+    notes:reg.notes||'',sig1n:(me&&me.name)||''});
+  const payload={doc:doc,cats:cats,
+    start:(prev&&prev.start!=null)?prev.start:10,
+    step:(prev&&prev.step!=null)?prev.step:10};
+  if(prev&&prev.opts)payload.opts=prev.opts;
+  try{localStorage.setItem(BOM_MAKER_KEY,JSON.stringify(payload));}
+  catch(e){toast('Could not hand off to BOM Maker',true);return;}
+  try{logAudit('export','bom',nm+' \u2192 BOM Maker');}catch(e){}
+  const total=cats.reduce(function(a,c){return a+c.items.length;},0);
+  // Opened from a local file:// copy there is no BOM-MAKER.html next to it (and localStorage
+  // is a different origin anyway) — so fall back to the hosted app URL.
+  let url=BOM_MAKER_FILE;
+  if(location.protocol.indexOf('http')!==0){
+    let base='';try{base=String((DB.company&&DB.company.appUrl)||'').trim().replace(/\/$/,'');}catch(e){}
+    if(!base){toast('Open the hosted site (not a downloaded copy) to use BOM Maker',true);return;}
+    url=base+'/'+BOM_MAKER_FILE;
+  }
+  toast('BOM Maker: '+total+' item(s) in '+cats.length+' group(s) from '+nm,false,'good');
+  const w=window.open(url,'_blank');
+  if(!w)location.href=url;
 }
 function openBom(id){if(!can('editBom'))return;editingBom=id||null;bomDraft=[];
   const cats=[...new Set([...CATS,...DB.parts.map(p=>p.cat).filter(Boolean)])];
@@ -2210,7 +2243,9 @@ function closeModal(id){document.getElementById(id).classList.remove('open');try
 let toastT;function toast(msg,bad,good){const t=document.getElementById('toast');t.textContent=msg;t.className='toast show'+(bad?' bad':good==='good'?' good':'');clearTimeout(toastT);toastT=setTimeout(()=>t.className='toast',2600);}
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function when(ts){const d=new Date(ts),n=new Date();const sd=d.toDateString()===n.toDateString();const t=d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});return sd?'Today '+t:d.toLocaleDateString('en-IN',{day:'2-digit',month:'short'})+' '+t;}
-document.querySelectorAll('.modal-bg').forEach(m=>m.addEventListener('click',e=>{if(e.target===m){if(m.id==='cartScanModal')closeCartScan();else m.classList.remove('open');}}));
+// Backdrop taps must NOT close a modal — too easy to lose a half-filled form.
+// Only the × button (or a Save/Cancel action) closes it. Esc also closes, since that is deliberate.
+document.addEventListener('keydown',function(e){if(e.key!=='Escape')return;const open=[...document.querySelectorAll('.modal-bg.open')].pop();if(!open)return;if(open.id==='cartScanModal'){try{closeCartScan();}catch(err){}}else{open.classList.remove('open');}try{hideAllCombos();}catch(err){}});
 </script>
 </body>
 </html>
