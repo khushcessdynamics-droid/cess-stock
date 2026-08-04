@@ -733,6 +733,484 @@ window.addEventListener('unhandledrejection', function(ev){
 }
 @media print{ table.cardify>thead{display:table-header-group!important} }
 </style>
+<style id="cess-system">
+/* ══════════════════════════════════════════════════════════════════
+   CESS design system — three-layer tokens (primitive → semantic →
+   component) plus the component rules built on them. Loaded last so
+   it re-points the existing token names without renaming any of them.
+   ══════════════════════════════════════════════════════════════════ */
+/* ══ LAYER 1 PRIMITIVES ══ */
+:root{
+  --c-blue-900:#141845; --c-blue-800:#1E2370; --c-blue-700:#2A2F86; --c-blue-600:#3A4099;
+  --c-blue-400:#9095D6; --c-blue-200:#C4C7EC; --c-blue-100:#E9EAF6;
+  --c-orange-700:#B25C12; --c-orange-600:#C9761F; --c-orange-500:#E0741E; --c-orange-300:#F0A65A;
+  --c-ink-900:#1A1D33; --c-ink-500:#62667B; --c-ink-300:#8589AD; --c-ink-200:#C9CBE0; --c-ink-100:#E4E6F0;
+  --c-paper-100:#FFFFFF; --c-paper-200:#F8F9FC; --c-paper-300:#F4F5FB;
+  --c-green-700:#167A4C; --c-green-100:#E4F5EC;
+  --c-amber-700:#98530F; --c-amber-100:#FBEEDD; --c-amber-200:#EBD3B1;
+  --c-red-700:#BB332A;  --c-red-100:#FBE9E7;
+  --c-violet-700:#6A48A0; --c-violet-100:#EEE9F2;
+
+  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:20px; --sp-6:24px; --sp-8:32px;
+  --sp-h1:2px; --sp-h2:6px; --sp-h3:10px; --sp-h4:14px;
+
+  --fs-2xs:10px; --fs-xs:11px; --fs-sm:12px; --fs-base:13px; --fs-md:14px; --fs-lg:15px;
+  --fs-xl:17px; --fs-2xl:20px; --fs-3xl:24px;
+  --fs-num-sm:23px; --fs-num:27px; --fs-num-lg:30px;
+  --lh-tight:1.2; --lh-snug:1.35; --lh-base:1.5;
+
+  --r-xs:6px; --r-sm:9px; --r-md:11px; --r-lg:14px; --r-xl:18px; --r-pill:999px;
+
+  --elev-1:0 1px 2px rgba(42,47,134,.05),0 6px 20px rgba(42,47,134,.07);
+  --elev-2:0 2px 6px rgba(20,26,60,.10);
+  --elev-3:0 10px 24px rgba(20,26,60,.13);
+  --elev-4:0 14px 44px rgba(42,47,134,.18);
+  --elev-5:0 30px 70px -20px rgba(9,12,45,.55),0 2px 8px rgba(9,12,45,.28);
+
+  --t-1:.12s; --t-2:.18s; --t-3:.3s;
+}
+
+/* ══ LAYER 2 SEMANTIC — existing names re-pointed, never renamed ══ */
+:root{
+  --blue:var(--c-blue-700); --blue-deep:var(--c-blue-800); --blue-soft:var(--c-blue-100);
+  --orange:var(--c-orange-500); --orange-soft:var(--c-orange-300);
+  --orange-btn:var(--c-orange-700); --orange-btn-2:var(--c-orange-600);
+  --ink:var(--c-ink-900); --slate:var(--c-ink-500);
+  --line:var(--c-ink-100); --line-ink:var(--c-ink-200); --line-strong:var(--c-ink-300);
+  --bg:var(--c-paper-300); --card:var(--c-paper-100);
+  --ok:var(--c-green-700); --ok-bg:var(--c-green-100);
+  --warn:var(--c-amber-700); --warn-bg:var(--c-amber-100);
+  --danger:var(--c-red-700); --danger-bg:var(--c-red-100);
+  --purple:var(--c-violet-700); --purple-bg:var(--c-violet-100);
+  --sidebar:var(--c-blue-700); --sidebar-2:var(--c-blue-600); --sidebar-line:#3E44A0;
+  --sidebar-edge:var(--c-blue-400); --sidebar-txt:var(--c-blue-200); --sidebar-dim:#B3B7EA;
+
+  --surface-alt:var(--c-paper-200);
+  --on-chrome:rgba(255,255,255,.10);
+  --on-chrome-hi:rgba(255,255,255,.20);
+  --on-chrome-edge:rgba(255,255,255,.22);
+
+  --shadow:var(--elev-1); --shadow-lg:var(--elev-4);
+  --radius-sm:var(--r-sm); --radius:var(--r-lg); --radius-lg:var(--r-xl);
+  --dur:.22s;
+
+  --focus-ring:var(--blue); --focus-w:2px; --focus-off:2px;
+}
+.sidebar,.top,.mobmods,#landing{--focus-ring:var(--orange)}
+
+/* ══ LAYER 3 COMPONENT ══ */
+:root{
+  --ctl-h:44px; --ctl-h-sm:36px;
+  --ctl-r:var(--r-md); --ctl-r-sm:var(--r-sm);
+  --ctl-px:18px; --ctl-px-sm:13px;
+  --field-r:var(--r-md); --field-px:14px;
+  --card-r:var(--r-lg); --card-pad:16px; --card-gap:var(--sp-3);
+  --modal-pad:20px; --modal-r:var(--r-xl);
+  --sb-gutter:12px;
+  --logo-h:clamp(42px,12vw,52px);
+  --logo-ink:.084;
+  --tbl-px:14px; --tbl-py:11px;
+}
+@media(max-width:900px){ :root{ --ctl-h-sm:44px; --modal-pad:16px; --card-pad:16px } }
+
+/* ══════════ BASE ══════════ */
+
+/* sticky .top / #subtabs are dead on phones: overflow-x:hidden on <body>
+   makes body a scroll container. `clip` clips identically without one. */
+@media(max-width:680px){ html,body{overflow-x:clip;overflow-y:visible} }
+
+/* one focus treatment for every control, in one colour per context */
+:focus-visible{outline:var(--focus-w) solid var(--focus-ring);outline-offset:var(--focus-off)}
+.fld input:focus,.fld select:focus,.fld textarea:focus,
+.toolbar input:focus,.toolbar select:focus,
+.afld input:focus,.setupbox input:focus,.gsearch input:focus,
+.tabfind input:focus,#cessAskWrap input:focus,.gfield input:focus,.gfield select:focus{box-shadow:none}
+.fld input:focus,.fld select:focus,.fld textarea:focus,
+.toolbar input:focus,.toolbar select:focus,.gfield input:focus,.gfield select:focus{border-color:var(--blue)}
+
+/* MOTION POLICY — one-shot response and entrance motion is kept; perpetual
+   ambient loops are removed. The live-sync dot is the one exception:
+   it reports state, so it is allowed to keep moving. */
+.top::after{display:none}
+.btn.orange::before,.abtn::before,.modbtn.active,.modbtn:hover .mi,
+.sechd .ic,.lowbar,.bigscan,.reallogo.lgidle .shine,
+.clogo.lgidle .swoosh,.clogo.lgidle .ccess span,.clogo.lgidle .inner{animation:none}
+.btn,.stbtn,.modbtn,.tab{transition:transform var(--t-1),background var(--t-2),color var(--t-2),border-color var(--t-2)}
+/* bare <h3> was falling through to the UA default 1.17em = 17.55px */
+h3{font-size:var(--fs-xl)}
+
+/* ══════════ CHROME — sidebar ══════════ */
+/* one 12px gutter, one 26px icon rail, one 53px label rail down the whole rail */
+.sblogo{padding:var(--sp-4) var(--sb-gutter) var(--sp-h3)}
+.modulebar{padding:var(--sp-h3) var(--sb-gutter) var(--sp-h2)}
+.modbtn{padding:11px var(--sp-h4);gap:9px;border-radius:var(--ctl-r);font-size:var(--fs-md)}
+.tabfind{padding:var(--sp-h4) var(--sb-gutter) var(--sp-2)}
+.tabfind input{padding:var(--sp-h3) var(--sp-3);min-height:38px;border-color:var(--sidebar-edge);
+  border-radius:var(--ctl-r-sm);font-size:var(--fs-base)}
+.tabs{padding:2px var(--sb-gutter) var(--sp-6)}
+.tab{font-size:var(--fs-base);border-radius:var(--ctl-r-sm);overflow:hidden}
+.sbnavlbl{font-size:var(--fs-2xs);padding:var(--sp-4) var(--sp-4) var(--sp-1)}
+/* rest → hover → active was #2A2F86 → #3A4099 → #3D4293: hover and active were
+   the same colour. .07 / .20 makes it a ladder. */
+.tab:hover,.modbtn:hover{background:var(--on-chrome);color:#fff}
+.tab.active{background:var(--on-chrome-hi)}
+.tab.active::before{top:0;bottom:0;border-radius:0}
+.modbtn.active{background:var(--orange-btn);box-shadow:none}
+.sidebar{box-shadow:2px 0 24px rgba(10,15,30,.16)}
+
+/* ══════════ CHROME — top bar ══════════ */
+/* one 34px control rhythm; .userbadge was 43.75px because .nm/.rl inherit 1.5 */
+.synctag{min-height:34px;padding:0 11px;border-radius:var(--r-pill);font-size:var(--fs-xs)}
+.lockbtn{min-height:34px;padding:0 var(--sp-3);border-color:var(--on-chrome-edge);display:inline-flex;align-items:center;justify-content:center;
+  border-radius:var(--ctl-r-sm);font-size:var(--fs-sm)}
+.logout{min-height:34px;min-width:34px;border-color:var(--on-chrome-edge);display:inline-flex;align-items:center;justify-content:center;
+  padding:0;border-radius:var(--ctl-r-sm);font-size:var(--fs-sm)}
+.userbadge{min-height:34px;padding:3px 11px 3px 3px;border-radius:var(--r-pill)}
+.userbadge .av{width:28px;height:28px}
+.userbadge .nm{line-height:var(--lh-tight);font-size:var(--fs-sm)}
+.userbadge .rl{line-height:var(--lh-tight);font-size:var(--fs-2xs)}
+.top .brand{font-size:var(--fs-xl)}
+.gsearch input{border-radius:var(--ctl-r);font-size:var(--fs-base);padding:var(--sp-h3) var(--sp-3)}
+.toplogo{box-shadow:var(--elev-2)}
+.clogo{box-shadow:var(--elev-2)}
+
+/* ══════════ CHROME — global search results ══════════ */
+.gsbox{border-radius:var(--ctl-r);box-shadow:var(--elev-3);scrollbar-gutter:stable}
+.gsitem{padding:9px var(--sp-h4);gap:11px;font-size:var(--fs-base);border-bottom-color:var(--line-ink)}
+.gsitem b{line-height:var(--lh-snug)}
+.gsitem>span:first-child{width:20px;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;font-size:var(--fs-lg);line-height:1}
+.gshdr{position:sticky;top:0;z-index:2;font-size:var(--fs-xs);box-shadow:0 1px 0 var(--line-ink)}
+.gskind{font-size:var(--fs-xs);background:var(--blue-soft);color:var(--blue);
+  padding:3px var(--sp-2);border-radius:var(--r-pill);line-height:var(--lh-snug)}
+
+/* ══════════ SURFACES ══════════ */
+.panel,.kpi,.dashkpi,.gatecard,.usercard,.challan-card,.hometile{border-radius:var(--card-r)}
+.panel.pad{padding:var(--card-pad)}
+.sechd .ic{border-radius:var(--ctl-r)}
+.sechd .cr{font-size:var(--fs-2xs)}
+.sechd .tt{font-size:var(--fs-3xl)}
+.footer{color:var(--slate);font-size:var(--fs-sm);margin-top:var(--sp-8)}
+.empty{padding:44px var(--sp-5);max-width:460px;margin-left:auto;margin-right:auto}
+.empty .ico{font-size:34px;line-height:1;margin-bottom:var(--sp-3)}
+.empty h3{font-size:var(--fs-xl);line-height:var(--lh-snug);margin-bottom:var(--sp-h2)}
+.empty>div:not(.ico){font-size:var(--fs-base);line-height:1.55}
+.permchk,.setupbox,#cessLogWrap textarea{background:var(--surface-alt)}
+.permchk{font-size:var(--fs-sm);border-radius:var(--ctl-r-sm)}
+.stars .off{color:var(--line-ink)}
+.stars{color:var(--orange-btn-2)}
+
+/* ══════════ KPI + dashboard: one numeral system ══════════ */
+.kpis{gap:var(--sp-3)}
+.kpi{padding:15px var(--card-pad)}
+.kpi .n{line-height:1.1;font-variant-numeric:tabular-nums}
+.kpi .l{font-size:var(--fs-xs);margin-top:var(--sp-h2)}
+.kpi .locked{font-size:var(--fs-xl)}
+.kpi:hover{transform:translateY(-2px);box-shadow:var(--elev-3)}
+.dashgrid{gap:var(--sp-3)}
+.dashkpi{padding:var(--card-pad)}
+.dashkpi .v{font-family:var(--mono);font-size:var(--fs-num);font-weight:700;letter-spacing:-.03em;
+  line-height:1.1;font-variant-numeric:tabular-nums}
+.dashkpi .l{font-size:var(--fs-sm);margin-top:var(--sp-h2);line-height:var(--lh-snug)}
+.dashhd{font-size:var(--fs-md)}
+.dashrow{font-size:var(--fs-base)}
+.catbar .t{font-size:var(--fs-sm)}
+.invrow{font-size:var(--fs-base)}
+.invrow.h{font-size:var(--fs-xs);letter-spacing:.06em}
+.lowbar{font-size:var(--fs-base);padding:11px var(--sp-h4);border-color:var(--c-amber-200);
+  border-radius:var(--ctl-r)}
+.sectlbl{font-size:var(--fs-xs)}
+
+/* ══════════ PART / RECORD CARDS ══════════ */
+.part{padding:var(--card-pad);gap:var(--sp-h3)}
+.grid{gap:var(--card-gap)}
+.part .nm{font-size:var(--fs-lg);line-height:var(--lh-snug)}
+.part .sku{font-size:var(--fs-sm)}
+.part .qty{font-size:var(--fs-num-lg);line-height:1.05;font-family:var(--mono);font-weight:700;font-variant-numeric:tabular-nums}
+.part .stockrow{gap:7px;min-height:32px}
+.part .stockrow .pill{align-self:center}
+.part:hover,.challan-card:hover{transform:translateY(-2px);box-shadow:var(--elev-3);border-color:var(--line-ink)}
+.meta{font-size:var(--fs-sm)}
+.resv{font-size:var(--fs-sm)}
+.challan-card .cm,.usercard .uh + div{font-size:var(--fs-sm)}
+/* .stbtn{min-width:60px} silently beat .stbtn.edit{flex:0 0 46px}, so all five
+   buttons were 60px and the row wrapped to two lines at every card width 320-780. */
+.part .acts{gap:7px;margin-top:var(--sp-1)}
+.stbtn{flex:1 1 auto;min-width:0;min-height:var(--ctl-h);padding:0 var(--sp-h3);
+  font-size:var(--fs-base);line-height:1;white-space:nowrap;border-radius:var(--ctl-r-sm)}
+.stbtn.res,.stbtn.edit{flex:0 0 var(--ctl-h);min-width:var(--ctl-h);max-width:var(--ctl-h);
+  padding:0;font-size:var(--fs-lg)}
+.part .head>.stbtn.edit{align-self:flex-start}
+
+/* ══════════ BADGES — one shape, one size ══════════ */
+.pill,.chip,.rbadge,.statustag{font-size:var(--fs-xs);padding:4px 9px;border-radius:var(--r-pill);
+  line-height:var(--lh-snug)}
+.pill{margin-left:auto}
+.rbadge.operator{background:var(--surface-alt);color:var(--slate)}
+
+/* ══════════ TABLES ══════════ */
+table{font-size:var(--fs-base);font-variant-numeric:tabular-nums}
+th{padding:var(--tbl-py) var(--tbl-px);font-size:var(--fs-xs)}
+td{padding:var(--tbl-py) var(--tbl-px)}
+.tdir{font-size:var(--fs-base)}
+.tref{font-size:var(--fs-sm)}
+@media(min-width:901px){
+  table tbody tr:nth-child(even){background:var(--surface-alt)}
+  table tbody tr:hover{background:var(--blue-soft)}
+  /* pure-number columns only — ORDER carries a unit suffix, so it stays left */
+  #tab-reorder thead th:nth-child(3),#tab-reorder thead th:nth-child(4),
+  #reBody td:nth-child(3),#reBody td:nth-child(4),
+  #tab-ledger thead th:nth-child(4),#ledBody td:nth-child(4){text-align:right}
+}
+
+/* ══════════ BUTTONS ══════════ */
+.btn{padding:9px var(--ctl-px);min-height:var(--ctl-h);border-radius:var(--ctl-r);
+  font-size:var(--fs-md);box-shadow:var(--elev-2)}
+.btn.sm{padding:7px var(--ctl-px-sm);min-height:var(--ctl-h-sm);border-radius:var(--ctl-r-sm);
+  font-size:var(--fs-base)}
+.btn:hover{filter:brightness(1.06)}
+/* white on #E0741E is 3.14:1 — the :root comment already names --orange-btn
+   as the stop for white text, but .btn.orange never adopted it. */
+.btn.orange{background:var(--orange-btn);box-shadow:var(--elev-2)}
+.btn.ghost{border-color:var(--line-strong);box-shadow:none}
+.btn.ghost:hover{filter:none;background:var(--blue-soft);border-color:var(--blue)}
+.abtn{position:relative;overflow:hidden;min-height:var(--ctl-h);border-radius:var(--ctl-r);
+  font-size:var(--fs-lg)}
+.abtn.org{background:var(--orange-btn)}
+.stbtn.cart{background:var(--orange-btn)}
+.bigscan{background:var(--orange-btn);box-shadow:var(--elev-2);border-radius:var(--ctl-r)}
+.bigscan:active{background:#8E480C}
+.cartcount{border-radius:var(--ctl-r);font-size:var(--fs-lg)}
+.scanbar input{font-size:var(--fs-lg);border-radius:var(--ctl-r)}
+.reallogo{border-radius:var(--ctl-r)}
+#app textarea{border-radius:var(--field-r)}
+.cesspg{font-size:var(--fs-base)}
+.cesspg button,.cesspg select{min-height:var(--ctl-h-sm);border-radius:var(--ctl-r-sm);font-size:var(--fs-md)}
+#cessErrBtn{box-shadow:var(--elev-3)}
+
+/* ══════════ FIELDS ══════════ */
+.fld{margin-bottom:var(--sp-4)}
+.fld label,.afld label{font-size:var(--fs-xs);margin-bottom:var(--sp-h2)}
+.fld input,.fld select,.fld textarea,
+.toolbar input[type=search],.toolbar select,
+.afld input,.setupbox input,#cessAskWrap input{border-color:var(--line-strong);border-radius:var(--field-r)}
+.fld input,.fld select,.toolbar input[type=search],.toolbar select{height:var(--ctl-h);min-height:var(--ctl-h);
+  padding:0 var(--field-px)}
+.fld textarea{min-height:calc(var(--ctl-h)*2);padding:var(--sp-3) var(--field-px)}
+.toolbar input[type=search],.toolbar select{box-shadow:none}
+.two{gap:var(--sp-3)}
+.stkrow input,.bomline input{border-color:var(--line-strong);border-radius:var(--ctl-r-sm);min-height:var(--ctl-h-sm)}
+/* the guest form was the last place carrying a second blue (#1b3a7a) and its own greys */
+.gfield label{color:var(--slate);font-size:var(--fs-xs);text-transform:uppercase;letter-spacing:.04em;font-weight:700}
+.gfield input,.gfield select{border:1px solid var(--line-strong);border-radius:var(--field-r);
+  min-height:var(--ctl-h);background:var(--card);color:var(--ink)}
+.gfield input:focus,.gfield select:focus{border-color:var(--blue)}
+.scanbar input::placeholder{color:var(--slate)}
+
+/* ══════════ SEGMENTED CONTROLS + STEPPER ══════════ */
+.cartdir button{min-height:var(--ctl-h);height:auto;padding:var(--sp-h2) var(--sp-h3);
+  font-size:var(--fs-base);line-height:var(--lh-tight);border-radius:var(--ctl-r);
+  border-width:2px;border-color:var(--line-strong)}
+.issuetype button{min-height:var(--ctl-h);padding:var(--sp-h2) var(--sp-2);font-size:var(--fs-base);
+  line-height:var(--lh-tight);border-radius:var(--ctl-r-sm);border-width:2px;border-color:var(--line-strong)}
+.cartdir button.sel.out,.cartdir button.sel.in,
+.issuetype button.sel.proj,.issuetype button.sel.ret,.issuetype button.sel.foc{border-color:currentColor}
+.stepper button{width:var(--ctl-h-sm);height:var(--ctl-h-sm);min-height:var(--ctl-h-sm);
+  border-radius:var(--ctl-r-sm)}
+.stepper .qv{min-width:38px;font-family:var(--mono);font-size:var(--fs-xl);font-variant-numeric:tabular-nums}
+.qtygrid button{min-height:var(--ctl-h-sm);border-radius:var(--ctl-r-sm);
+  border:1px solid transparent;font-variant-numeric:tabular-nums;
+  transition:background var(--t-2),border-color var(--t-2),color var(--t-2)}
+.qtygrid button:hover{background:var(--blue);color:#fff}
+.cartline .rm{width:var(--ctl-h-sm);height:var(--ctl-h-sm);padding:0;display:flex;align-items:center;
+  justify-content:center;border-radius:var(--ctl-r-sm);flex-shrink:0;transition:background var(--t-2)}
+.cartline .rm:hover{background:var(--danger-bg)}
+.cartline .ci .n{font-size:var(--fs-md)}
+.cartline .ci .s{font-size:var(--fs-xs)}
+
+/* ══════════ MODALS ══════════ */
+/* .modal-bg was z-index 100, under .top (700): on a phone the sheet's drag
+   handle and <h2> painted UNDER the app chrome and were not clickable.
+   The three raises below ship with it — .combo-box / .toast / .scanflash are
+   fixed children of <body> and would otherwise fall behind the sheet. */
+.modal-bg{z-index:800;background:rgba(14,23,38,.56);backdrop-filter:blur(3px);animation:none}
+.modal-bg.open{animation:mbfade var(--t-2) ease both}
+@keyframes mbfade{from{opacity:0}to{opacity:1}}
+.combo-box{z-index:1200;border-radius:var(--ctl-r);box-shadow:var(--elev-3)}
+.combo-item{font-size:var(--fs-md)}
+.toast{z-index:1300;border-radius:var(--ctl-r);box-shadow:var(--elev-4);font-size:var(--fs-md)}
+.scanflash{z-index:1300;border-radius:var(--card-r)}
+.modal{padding:var(--modal-pad);border-radius:var(--modal-r) var(--modal-r) 0 0}
+.modal h2{font-size:var(--fs-2xl);margin-bottom:var(--sp-1)}
+.modal .sub{font-size:var(--fs-base);margin-bottom:var(--sp-4)}
+/* the footer hard-coded the desktop 22px inset, so in a 16px-padded mobile
+   sheet it was 402px wide inside a 390px modal = 6px of sideways scroll */
+.modal .modal-acts{margin:var(--sp-5) calc(-1*var(--modal-pad)) 0;
+  padding:var(--sp-3) var(--modal-pad) calc(var(--sp-3) + env(safe-area-inset-bottom));
+  gap:var(--sp-3);
+  box-shadow:0 -1px 0 var(--line-ink),0 -14px 18px -10px rgba(255,255,255,.96)}
+.modal .modal-acts .btn{min-height:var(--ctl-h);padding:9px var(--ctl-px);min-width:120px}
+.modal-acts .btn.ghost{flex:0 1 auto;min-width:104px}
+.modal .close{width:38px;height:38px;top:10px;right:10px;display:flex;align-items:center;
+  justify-content:center;font-size:23px;border-radius:var(--ctl-r);
+  transition:background var(--t-2),color var(--t-2)}
+.modal .close:hover{background:var(--blue-soft);color:var(--blue)}
+
+/* ══════════ LANDING / AUTH ══════════ */
+/* align-items:center + overflow:auto clipped the TOP of an overflowing card
+   and it could not be scrolled to. Auto margins centre when there is room and
+   collapse to 0 when there is not. */
+#landing{align-items:flex-start;padding:clamp(16px,4vw,32px)}
+.auth{margin:auto;--logoh:var(--logo-h);box-shadow:var(--elev-5);border-radius:var(--r-xl)}
+.brandbig{justify-content:center;margin-bottom:0}
+.lgwrap{margin-bottom:0;margin-top:calc(var(--logoh)*-1*var(--logo-ink))}
+.lgwrap img{height:var(--logoh)}
+/* the logo PNG carries 8.4% transparent padding top/bottom; pulling the box up
+   by that fraction makes the optical top padding a true 20px */
+.modetag{display:flex;width:max-content;margin:calc(var(--sp-5) - var(--logoh)*var(--logo-ink)) auto 0;
+  padding:5px var(--sp-3);border-radius:var(--r-pill);font-size:var(--fs-xs);
+  line-height:var(--lh-snug);letter-spacing:.02em;border:1px solid rgba(152,83,15,.20)}
+.authsub{text-align:center;margin:var(--sp-5) 0 var(--sp-6);font-size:var(--fs-md)}
+.afld{margin-bottom:var(--sp-h4)}
+.afld input{padding:0 var(--field-px);height:var(--ctl-h);min-height:var(--ctl-h)}
+.amsg{border-radius:var(--r-xs) var(--ctl-r) var(--ctl-r) var(--r-xs);border-left:3px solid currentColor;
+  line-height:1.45;font-size:var(--fs-base)}
+.setup-toggle{display:inline-block;padding:var(--sp-2) var(--sp-h3);font-size:var(--fs-sm)}
+.setupbox{border-radius:var(--ctl-r);border-color:var(--line)}
+.setupbox h3{font-size:var(--fs-md)}
+.setupbox p{font-size:var(--fs-sm)}
+.setupbox input{border-radius:var(--field-r);padding:0 var(--sp-3);min-height:var(--ctl-h);font-size:var(--fs-base)}
+/* the decorative SVG carries class="panel", so the app's data-panel chrome
+   (white fill, --line border, 14px radius, --shadow) was painting it as a
+   stray UI card on the login background. Restore it to line art. */
+.roboBg .panel{background:none;border:0;border-radius:0;box-shadow:none;overflow:visible;
+  --pw:clamp(104px,12vw,150px);width:var(--pw);
+  left:calc(40px - var(--pw)*.0625);bottom:calc(48px - var(--pw)*.06);opacity:.34}
+/* offsets solved from each SVG's real ink box, so the crop fraction stops
+   inverting with screen size: robot hand always 28px from the right edge,
+   feet always 44px above the bottom; gear ink always lands at (34,30). */
+.roboBg .arm{--aw:clamp(232px,42vw,560px);width:var(--aw);
+  right:calc(28px - var(--aw)*.1333);bottom:calc(44px - var(--aw)*.1667);opacity:.9}
+.roboBg .arm2{--gw:clamp(150px,17vw,250px);width:var(--gw);
+  left:calc(34px - var(--gw)*.1492);top:calc(30px - var(--gw)*.1492);opacity:.42}
+.roboBg .rgrid{-webkit-mask-image:radial-gradient(ellipse 88% 72% at 52% 58%,#000 34%,transparent 76%);
+        mask-image:radial-gradient(ellipse 88% 72% at 52% 58%,#000 34%,transparent 76%)}
+
+/* ══════════ RESPONSIVE — tablet and below ══════════ */
+@media(max-width:900px){
+  /* the drawer and its scrim must paint above .top (z-index:700); at 60/55 the
+     drawer's whole logo block was hidden behind the bar and the scrim never
+     dimmed it. Both stay below .modal-bg (800). */
+  .sidebar{z-index:760}
+  .sboverlay{z-index:750}
+  .tab{font-size:var(--fs-md)}
+  .tab.active{outline:none}
+  .modbtn{font-size:var(--fs-md)}
+  .kpi .n{font-size:var(--fs-num-sm)}
+  /* the author's own compact header rules at 441-443 are dead — 445-448
+     redeclare them at equal specificity further down and win */
+  .sechd .ic{display:none}
+  .sechd .cr{font-size:var(--fs-2xs)}
+  .sechd .tt{font-size:var(--fs-xl)}
+  .sechd{margin:0 0 var(--sp-h4);padding-bottom:var(--sp-h3);border-bottom-width:1px}
+  /* every row-1 control in the top bar becomes 44px: the <img> and the
+     <div class=userbadge> were never brought up to match the buttons */
+  .top .right{align-items:stretch}
+  .toplogo{height:44px;padding:7px 10px;border-radius:var(--ctl-r-sm)}
+  .top .userbadge{width:44px;min-width:44px;min-height:44px;padding:0;justify-content:center;border-radius:50%}
+  .top .userbadge .av{width:30px;height:30px;font-size:var(--fs-base)}
+  /* white chips on a white bar; tint the bar and fade the right edge so the
+     3.3-screen-wide strip shows that it scrolls. Right edge only —
+     buildSubTabs scrollIntoViews the active chip. */
+  .subtabs{background:rgba(244,245,251,.94);padding:9px 22px 9px var(--sb-gutter);
+    scroll-padding-inline:var(--sb-gutter);
+    -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 30px),transparent);
+            mask-image:linear-gradient(90deg,#000 calc(100% - 30px),transparent)}
+  .subtabs .st{border-color:var(--line-strong);font-size:var(--fs-base)}
+  .mobmods .mm{font-size:var(--fs-xs)}
+  .mobmods .mm.active{background:var(--on-chrome)}
+  .mobmods .mmscan{background:linear-gradient(135deg,var(--orange-btn),var(--orange-btn-2));
+    box-shadow:0 8px 22px rgba(20,26,60,.28),0 0 0 5px var(--sidebar),0 0 0 6px rgba(255,255,255,.10)}
+  .btn{padding:11px var(--ctl-px);min-height:var(--ctl-h)}
+  .btn.sm{min-height:var(--ctl-h-sm)}
+  .fld label{font-size:var(--fs-xs)}
+  .fld input,.fld select{min-height:var(--ctl-h);height:var(--ctl-h);padding:0 var(--field-px);
+    border-radius:var(--field-r)}
+  .fld textarea{padding:var(--sp-3) var(--field-px);border-radius:var(--field-r)}
+  .fld select{background-position:calc(100% - 19px) 20px,calc(100% - 13px) 20px}
+  .toolbar input[type=search],.toolbar select{min-height:var(--ctl-h);height:var(--ctl-h);padding:0 var(--field-px)}
+  .modal{padding:var(--modal-pad)}
+  .modal h2{font-size:var(--fs-2xl)}
+  .modal-acts .btn{min-height:var(--ctl-h);font-size:var(--fs-md)}
+  .modal-acts .btn.ghost{flex:1 1 46%;min-width:0}
+  .qtygrid button{min-height:var(--ctl-h-sm)}
+  .stkrow input{min-height:var(--ctl-h-sm)}
+  .stepper button{width:var(--ctl-h-sm);height:var(--ctl-h-sm)}
+  /* mobile card reflow: 104px label gutter + 12px gap ate 32% of a 366px card,
+     and the value font was LARGER than the same data on desktop */
+  table.cardify>tbody>tr{padding:var(--sp-3) var(--sp-h4);margin:0 0 var(--sp-2);border-radius:var(--card-r)}
+  table.cardify>tbody>tr>td{grid-template-columns:96px minmax(0,1fr);gap:var(--sp-h3);
+    padding:var(--sp-h2) 0!important;font-size:var(--fs-md)!important;line-height:1.4}
+  table.cardify>tbody>tr>td::before{font-size:var(--fs-xs);padding-top:2px;line-height:var(--lh-snug)}
+  table.cardify>tbody>tr>td .tref{font-size:var(--fs-sm)}
+}
+
+/* ══════════ RESPONSIVE — card grid + phone ══════════ */
+/* the 2-column tablet rule fired from 601px, where a card is 283px — too
+   narrow for a 5-button action row */
+@media(min-width:601px) and (max-width:719px){ .grid{grid-template-columns:1fr} }
+@media(min-width:1000px){ .dashgrid{grid-template-columns:repeat(4,1fr)} }
+@media(max-width:680px){
+  table{font-size:var(--fs-base)}
+  th,td{padding:9px var(--sp-3)}
+  .toolbar{gap:var(--sp-2)}
+  .toolbar select{flex:1 1 calc(50% - 4px);min-width:0}
+  .toplogo{height:44px;padding:7px 9px}
+}
+/* phones: one complete robot, nothing else — the gears and the tablet render
+   as 108px / 72px smudges that physically overlap the auth card */
+@media(max-width:599px){
+  .roboBg .arm2,.roboBg .panel{display:none}
+  .roboBg .arm{--aw:236px;opacity:.85}
+  .modal::before{background:var(--line-ink);width:40px;height:4px;margin:-4px auto var(--sp-h4)}
+}
+@media(max-width:400px){ .auth{padding:var(--sp-6) var(--sp-5)} }
+/* aria-hidden ornament, and the keyboard is open — suppress rather than crop */
+@media(min-width:901px) and (max-height:700px){ .roboBg .panel{display:none} }
+@media(max-width:900px) and (max-height:620px){ .roboBg{display:none} .auth{padding:var(--sp-5)} }
+
+
+/* ── post-verification contrast corrections ────────────────────────
+   Caught by a live audit across every tab after the system landed:
+   .userbadge .av still filled with raw --orange (white on it = 3.14:1),
+   and the ledger IN cell sat at 4.48:1 on the --blue-soft highlight
+   row — a rounding-level miss, but a miss.                        */
+.userbadge .av{background:var(--orange-btn)}      /* white on it: 4.74:1 */
+.tdir,.tin,td.tdir{color:#146B43}                 /* 5.47 on --blue-soft, 6.53 on white */
+
+/* icon+label alignment inside JS-rendered chips and buttons */
+.kpi .locked{display:inline-flex;align-items:center;gap:6px}
+.lowbar{display:flex;align-items:center;gap:9px}
+.lowbar>span{min-width:0}
+.stbtn{display:inline-flex;align-items:center;justify-content:center;gap:5px}
+
+/* On phones .bigscan is hidden (scan lives in the bottom FAB), which left
+   .cartcount stretched full-width showing only a count — it read as an
+   empty slab rather than a control. Give it its label back there.      */
+.cartcount{display:flex;align-items:center;justify-content:center;gap:8px}
+.cartlbl{display:none;font-weight:700}
+@media(max-width:900px){
+  .cartlbl{display:inline}
+  .cartcount{gap:9px;font-size:var(--fs-md)}
+}
+
+/* #tabFind sets outline:none inline-ish via its own rule and so escaped the
+   global :focus-visible ring — every focusable control must show one.     */
+#tabFind:focus-visible,.tabfind input:focus-visible{
+  outline:var(--focus-w) solid var(--focus-ring)!important;
+  outline-offset:var(--focus-off)!important;
+}
+</style>
 </head>
 <body>
 <div id="landing">
@@ -875,7 +1353,7 @@ window.addEventListener('unhandledrejection', function(ev){
   <nav class="subtabs noprint" id="subtabs" aria-label="Section"></nav>
   <div class="wrap">
     <div class="scanbar noprint" id="scanbar">
-      <div class="row"><button class="bigscan" onclick="openCart()"><span class="ti"><svg class="ic-s" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 8V5.5A2.5 2.5 0 0 1 5.5 3H8"/><path d="M16 3h2.5A2.5 2.5 0 0 1 21 5.5V8"/><path d="M21 16v2.5a2.5 2.5 0 0 1-2.5 2.5H16"/><path d="M8 21H5.5A2.5 2.5 0 0 1 3 18.5V16"/><path d="M3 12h18"/></svg></span>Scan to Cart</button><button class="cartcount empty" id="cartBtn" onclick="openCartReview()"><span class="ti"><svg class="ic-s" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="9.5" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2.6l2.3 11.4a1.6 1.6 0 0 0 1.6 1.3h8.9a1.6 1.6 0 0 0 1.6-1.3L21 7H5.3"/></svg></span> <span id="cartN">0</span></button></div>
+      <div class="row"><button class="bigscan" onclick="openCart()"><span class="ti"><svg class="ic-s" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 8V5.5A2.5 2.5 0 0 1 5.5 3H8"/><path d="M16 3h2.5A2.5 2.5 0 0 1 21 5.5V8"/><path d="M21 16v2.5a2.5 2.5 0 0 1-2.5 2.5H16"/><path d="M8 21H5.5A2.5 2.5 0 0 1 3 18.5V16"/><path d="M3 12h18"/></svg></span>Scan to Cart</button><button class="cartcount empty" id="cartBtn" onclick="openCartReview()"><span class="ti"><svg class="ic-s" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="9.5" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2.6l2.3 11.4a1.6 1.6 0 0 0 1.6 1.3h8.9a1.6 1.6 0 0 0 1.6-1.3L21 7H5.3"/></svg></span><span class="cartlbl">Cart</span><span id="cartN">0</span></button></div>
       <div class="row" style="margin-top:10px"><input id="scanInput" placeholder="No camera? Type SKU or category code + Enter..." autocomplete="off"></div>
       <div class="hint">Scan a <b>part QR</b> or a <b>cupboard category QR</b> &rarr; items appear &rarr; add to cart with qty &rarr; checkout. Issues generate a challan PDF.</div>
     </div>
@@ -1091,6 +1569,13 @@ var ICO_P={
  "users":"<path d=\"M15.5 20v-1.8a3.6 3.6 0 0 0-3.6-3.6H6.6A3.6 3.6 0 0 0 3 18.2V20\"/><circle cx=\"9.2\" cy=\"7.5\" r=\"3.5\"/><path d=\"M21 20v-1.8a3.6 3.6 0 0 0-2.7-3.5\"/><path d=\"M15.8 4.1a3.6 3.6 0 0 1 0 6.9\"/>"
 };
 /* module ids and a few tab ids resolve to a glyph by alias */
+/* button glyphs */
+ICO_P['lockopen']='<rect x="4.5" y="10" width="15" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 7.5-1.9"/>';
+ICO_P['pencil']='<path d="M4 20h4L19.5 8.5a2.1 2.1 0 0 0-3-3L5 17v3Z"/><path d="m14.5 6.5 3 3"/>';
+ICO_P['trash']='<path d="M4 7h16"/><path d="M9.5 7V5a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v2"/><path d="M6.5 7 7.6 20a1 1 0 0 0 1 .9h6.8a1 1 0 0 0 1-.9L17.5 7"/><path d="M10.5 11v6"/><path d="M13.5 11v6"/>';
+ICO_P['eye']='<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="3.2"/>';
+ICO_P['plus']='<path d="M12 5v14"/><path d="M5 12h14"/>';
+ICO_P['minus']='<path d="M5 12h14"/>';
 var ICO_ALIAS={inventory:'package',gatepass:'file',billing:'receipt',admin:'settings',
   home:'house',stock:'package',ledger:'book',challans:'receipt',visitors:'idcard',
   gate:'shieldcheck',reorder:'refresh',bom:'layers',inward:'boxplus',po:'clipboard',
@@ -1434,21 +1919,21 @@ function money(n){return 'Rs '+Math.round(n).toLocaleString('en-IN');}
 function catCode(cat){return 'CAT::'+cat;}
 
 function toggleLock(){if(!can('seePrice'))return;pricesUnlocked=!pricesUnlocked;applyLock();toast(pricesUnlocked?'Prices shown':'Prices hidden',false,pricesUnlocked?'good':'');}
-function applyLock(){const b=document.getElementById('lockBtn');if(b){b.className='lockbtn'+(pricesUnlocked?' unlocked':'');b.innerHTML=pricesUnlocked?'🔓 Prices':'🔒 Prices';}document.querySelectorAll('.priceFld').forEach(e=>e.style.display=(pricesUnlocked&&can('seePrice'))?'':'none');try{fixFormRows();}catch(e){CESSLOG.cap(e);}renderAll();}
+function applyLock(){const b=document.getElementById('lockBtn');if(b){b.className='lockbtn'+(pricesUnlocked?' unlocked':'');b.innerHTML=(pricesUnlocked?ICO('lockopen',15):ICO('lock',15))+'<span>Prices</span>';}document.querySelectorAll('.priceFld').forEach(e=>e.style.display=(pricesUnlocked&&can('seePrice'))?'':'none');try{fixFormRows();}catch(e){CESSLOG.cap(e);}renderAll();}
 function showPrice(){return pricesUnlocked&&can('seePrice');}
-function priceCell(html){return showPrice()?html:'<span class="locked">🔒</span>';}
+function priceCell(html){return showPrice()?html:'<span class="locked">'+ICO('lock',14)+'</span>';}
 
-function refreshKPIs(){document.getElementById('kSkus').textContent=DB.parts.length;let units=0,val=0,low=0;for(const p of DB.parts){const q=Math.max(onHand(p.sku),0);units+=q;val+=q*(p.cost||0);if(status(p)!=='ok')low++;}document.getElementById('kUnits').textContent=fmt(units);const kv=document.getElementById('kValue');if(kv)kv.innerHTML=showPrice()?money(val):'<span class="locked">🔒 locked</span>';document.getElementById('kLow').textContent=low;document.getElementById('lowbar').innerHTML=low>0?'<div class="lowbar">⚠️ <span><b>'+low+'</b> part'+(low>1?'s':'')+' need attention.</span></div>':'';}
+function refreshKPIs(){document.getElementById('kSkus').textContent=DB.parts.length;let units=0,val=0,low=0;for(const p of DB.parts){const q=Math.max(onHand(p.sku),0);units+=q;val+=q*(p.cost||0);if(status(p)!=='ok')low++;}document.getElementById('kUnits').textContent=fmt(units);const kv=document.getElementById('kValue');if(kv)kv.innerHTML=showPrice()?money(val):'<span class="locked">'+ICO('lock',15)+'<span>Locked</span></span>';document.getElementById('kLow').textContent=low;document.getElementById('lowbar').innerHTML=low>0?'<div class="lowbar">'+ICO('alert',17)+'<span><b>'+low+'</b> part'+(low>1?'s':'')+' need attention.</span></div>':'';}
 function render(){refreshKPIs();const q=(document.getElementById('search').value||'').toLowerCase(),cf=document.getElementById('catFilter').value,sf=document.getElementById('stockFilter').value,lf=(document.getElementById('locFilter')||{}).value||'';const grid=document.getElementById('partGrid');
   let list=DB.parts.filter(p=>{if(cf&&p.cat!==cf)return false;if(lf&&(p.loc||'')!==lf)return false;if(q&&!(p.name.toLowerCase().includes(q)||p.sku.toLowerCase().includes(q)))return false;const st=status(p);if(sf==='low'&&st==='ok')return false;if(sf==='out'&&st!=='out')return false;return true;});
   if(!list.length){grid.innerHTML='<div class="empty" style="grid-column:1/-1"><div class="ico">📦</div><h3>No parts</h3></div>';return;}
   const CAP=300;const total=list.length;const capped=list.length>CAP;if(capped)list=list.slice(0,CAP);
   grid.innerHTML=list.map(p=>{const h=onHand(p.sku),rv=reserved(p.sku),st=status(p);const pill=st==='out'?'<span class="pill out">OUT</span>':st==='low'?'<span class="pill low">LOW</span>':'<span class="pill ok">OK</span>';const valBit=showPrice()?'<span>'+money((p.cost||0)*Math.max(h,0))+'</span>':'';const resBit=rv>0?'<div class="resv">🔒 '+rv+' reserved · '+available(p.sku)+' available</div>':'';
-    let acts='<button class="stbtn cart" onclick="quickCart(\''+p.sku+'\')">🛒 Cart</button>';
+    let acts='<button class="stbtn cart" onclick="quickCart(\''+p.sku+'\')">'+ICO('cart',15)+'<span>Cart</span></button>';
     if(can('issue'))acts+='<button class="stbtn rem" onclick="openTxn(\''+p.sku+'\',\'OUT\')">− OUT</button>';
     if(can('receive'))acts='<button class="stbtn add" onclick="openTxn(\''+p.sku+'\',\'IN\')">＋ IN</button>'+acts;
-    if(can('reserve'))acts+='<button class="stbtn res" onclick="openReserve(\''+p.sku+'\')">🔒</button>';
-    if(can('addPart'))acts+='<button class="stbtn edit" onclick="openPart(\''+p.sku+'\')">✎</button>';
+    if(can('reserve'))acts+='<button class="stbtn res" onclick="openReserve(\''+p.sku+'\')" aria-label="Reserve">'+ICO('lock',15)+'</button>';
+    if(can('addPart'))acts+='<button class="stbtn edit" onclick="openPart(\''+p.sku+'\')" aria-label="Edit part">'+ICO('pencil',15)+'</button>';
     return '<div class="part"><div class="head"><div><div class="nm">'+esc(p.name)+'</div><div class="sku">'+esc(p.sku)+'</div></div><span class="chip cat">'+esc(p.cat||'—')+'</span></div><div class="stockrow"><span class="qty">'+fmt(h)+'</span><span class="unit">'+esc(p.unit||'')+'</span>'+pill+'</div>'+resBit+'<div class="meta"><span>📍 <b>'+esc(p.loc||'—')+'</b></span><span>Min <b>'+p.min+'</b></span>'+valBit+'</div><div class="acts">'+acts+'</div></div>';}).join('')+(capped?'<div class="empty" style="grid-column:1/-1;padding:18px"><h3>Showing first '+CAP+' of '+fmt(total)+'</h3><div>Use search or category filter to narrow down.</div></div>':'');
 }
 function renderLedger(){const q=(document.getElementById('ledSearch').value||'').toLowerCase();const rows=[...DB.txns].sort((a,b)=>b.ts-a.ts).filter(t=>{if(!q)return true;const p=partBySku(t.sku);return t.sku.toLowerCase().includes(q)||(t.proj||'').toLowerCase().includes(q)||(t.by||'').toLowerCase().includes(q)||(p&&p.name.toLowerCase().includes(q));});const b=document.getElementById('ledBody');if(!rows.length){b.innerHTML='<tr><td colspan="6"><div class="empty"><div class="ico">📋</div><h3>No transactions</h3></div></td></tr>';return;}b.innerHTML=rows.slice(__pgS('led',rows.length),__pgE('led',rows.length)).map(t=>{const p=partBySku(t.sku);return '<tr><td>'+when(t.ts)+'</td><td><b>'+(p?esc(p.name):esc(t.sku))+'</b><br><span class="tref">'+esc(t.sku)+'</span></td><td class="tdir '+(t.dir==='IN'?'tin':'tout')+'">'+(t.dir==='IN'?'▲ IN':'▼ OUT')+'</td><td><b>'+(t.dir==='IN'?'+':'−')+t.qty+'</b></td><td>'+esc(t.proj||'—')+'</td><td>'+esc(t.by||'—')+'</td></tr>';}).join('');__pgBar('led',rows.length,b,renderLedger);}
