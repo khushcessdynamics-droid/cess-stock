@@ -125,10 +125,16 @@ window.addEventListener('unhandledrejection', function(ev){
 <style>
   :root{
     --blue:#2A2F86;--blue-deep:#1E2370;--blue-soft:#E9EAF6;--orange:#E0741E;--orange-soft:#F0A65A;
-    --ink:#1A1D33;--slate:#6B7086;--line:#E4E6F0;--line-ink:#C9CBE0;--bg:#F4F5FB;--card:#FFFFFF;
-    --ok:#1E9E63;--ok-bg:#E4F5EC;--warn:#C06A16;--warn-bg:#FBEEDD;--danger:#D14338;--danger-bg:#FBE9E7;
+    /* --orange stays vivid for decoration, rings and the active-tab marker
+       (all pass at 3:1). White text needs a darker stop, hence --orange-btn. */
+    --orange-btn:#B25C12;--orange-btn-2:#C9761F;
+    --ink:#1A1D33;--slate:#62667B;--line:#E4E6F0;--line-ink:#C9CBE0;--bg:#F4F5FB;--card:#FFFFFF;
+    /* perceivable boundary for inputs/buttons/cards — SC 1.4.11 needs 3:1,
+       --line (1.24:1 on white) is a hairline divider only */
+    --line-strong:#8589AD;
+    --ok:#167A4C;--ok-bg:#E4F5EC;--warn:#98530F;--warn-bg:#FBEEDD;--danger:#BB332A;--danger-bg:#FBE9E7;
     --purple:#6A48A0;--purple-bg:#EEE9F2;
-    --sidebar:#2A2F86;--sidebar-2:#3A4099;--sidebar-line:#3E44A0;--sidebar-txt:#C4C7EC;--sidebar-dim:#8B90C8;
+    --sidebar:#2A2F86;--sidebar-2:#3A4099;--sidebar-line:#3E44A0;--sidebar-edge:#9095D6;--sidebar-txt:#C4C7EC;--sidebar-dim:#B3B7EA;
     --shadow:0 1px 2px rgba(42,47,134,.05),0 6px 20px rgba(42,47,134,.07);--shadow-lg:0 14px 44px rgba(42,47,134,.18);
     --radius:14px;--radius-lg:18px;--radius-sm:9px;--sbw:224px;
     --mono:'JetBrains Mono',ui-monospace,Menlo,monospace;--ease:cubic-bezier(.22,.8,.3,1);--ease-spring:cubic-bezier(.34,1.4,.4,1);--dur:.22s;
@@ -322,13 +328,66 @@ window.addEventListener('unhandledrejection', function(ev){
   @media(max-width:680px){.toplogo{height:27px;padding:3px 8px}}
   .tab.active::before{content:"";position:absolute;left:0;top:12%;bottom:12%;width:4px;border-radius:4px;background:var(--orange)}
   button,.btn,.tab,.modbtn,.stbtn,[onclick]{touch-action:manipulation}
+  /* ===== ICON SYSTEM =====
+     Interface icons are inline SVG on a 24px grid drawn with currentColor,
+     so they inherit the active/hover colour of whatever holds them — which
+     the emoji they replaced could never do. .ti is the inline slot. */
+  .ic-s{display:block;flex-shrink:0;vertical-align:middle}
+  .ti{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;line-height:0}
+  h2 .ti,h3 .ti{margin-right:9px;vertical-align:-.18em}
+  .tab .ti{opacity:.9}
+  .tab.active .ti,.tab:hover .ti{opacity:1}
+  .modbtn .mi,.mobmods .mm .mi{display:flex;align-items:center;justify-content:center}
+  .hometile .hi{display:flex;align-items:center;justify-content:center;color:var(--blue)}
+  .hometile.more .hi{color:var(--blue)}
+  .sechd .ic .ic-s{margin:0 auto}
+  .bigscan .ti,.cartcount .ti{vertical-align:-.2em}
+  .lockbtn .ti{margin-right:5px;vertical-align:-.2em}
+  /* ===== MOBILE SUB-TAB STRIP =====
+     Desktop keeps the sidebar tab list; phones get this sticky, horizontally
+     scrollable row so a sub-tab is always one tap away (--topH is measured
+     from .top in JS, since the bar wraps to two rows on narrow screens). */
+  .subtabs{display:none}
+  @media(max-width:900px){
+    .subtabs{
+      display:flex;gap:8px;align-items:center;
+      position:sticky;top:var(--topH,96px);z-index:49;
+      margin:0;padding:9px 12px;
+      background:rgba(255,255,255,.92);-webkit-backdrop-filter:saturate(180%) blur(12px);backdrop-filter:saturate(180%) blur(12px);
+      border-bottom:1px solid var(--line);
+      overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;
+      -webkit-overflow-scrolling:touch;scrollbar-width:none;
+      scroll-snap-type:x proximity;
+    }
+    .subtabs::-webkit-scrollbar{display:none}
+    .subtabs .st{
+      flex:0 0 auto;display:inline-flex;align-items:center;gap:7px;
+      min-height:44px;padding:0 15px;border-radius:999px;
+      font-size:13.5px;font-weight:600;line-height:1;white-space:nowrap;
+      color:var(--slate);background:var(--card);border:1px solid var(--line);
+      scroll-snap-align:center;
+      transition:background .18s var(--ease),color .18s,border-color .18s;
+    }
+    .subtabs .st .sti{display:flex;flex-shrink:0}
+    .subtabs .st .sti svg{width:16px;height:16px;display:block}
+    .subtabs .st.active{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:700;box-shadow:0 2px 10px rgba(42,47,134,.28)}
+    .subtabs .st:active{transform:scale(.97)}
+    /* the strip replaces the drawer for day-to-day switching, so the wrap
+       no longer needs to clear a second navigation row */
+    .subtabs[hidden]{display:none}
+  }
   /* ===== MOBILE SHELL (drawer + bottom module bar) ===== */
   @media(max-width:900px){
     /* iOS: inputs under 16px trigger auto-zoom on focus — force 16px */
     input,select,textarea{font-size:16px!important}
     /* bigger touch targets (Apple/Google 44-48px guideline) */
-    .btn{padding:13px 18px;min-height:46px}.btn.sm{min-height:40px}
+    .btn{padding:13px 18px;min-height:46px}.btn.sm{min-height:44px}
     .stepper button{width:44px;height:44px}
+    /* Catch-all so one-off controls can't slip under the 44px minimum —
+       #gsearch was 38px and #grnFiles / #auditSearch only 24px. */
+    #app input:not([type=checkbox]):not([type=radio]):not([type=hidden]),
+    #app select,#app textarea{min-height:44px}
+    #app input[type=checkbox],#app input[type=radio]{width:22px;height:22px}
     .tab{padding:13px 12px 13px 14px;min-height:44px;font-size:14.5px}
     .tab.active{outline:2px solid rgba(255,255,255,.35);outline-offset:-2px}
     .tab.active::before{width:5px}
@@ -767,52 +826,56 @@ window.addEventListener('unhandledrejection', function(ev){
     <div class="modulebar noprint" id="modulebar"></div>
     <div class="tabfind noprint"><input id="tabFind" type="search" placeholder="Find module…" autocomplete="off" aria-label="Filter modules" oninput="__filterTabs(this.value)"></div>
     <div class="tabs noprint" id="tabbar">
-      <div class="tab active" data-tab="dashboard" onclick="setTab('dashboard')">&#128202; Dashboard</div>
-      <div class="tab" data-tab="stock" onclick="setTab('stock')">&#128230; Stock</div>
-      <div class="tab" data-tab="ledger" onclick="setTab('ledger')">&#128203; Ledger</div>
-      <div class="tab" data-tab="challans" onclick="setTab('challans')">&#129534; Challans</div>
-      <div class="tab" data-tab="visitors" onclick="setTab('visitors')">&#129694; Gate Pass</div>
-      <div class="tab" data-tab="gate" onclick="setTab('gate')">&#9989; Gate Approve</div>
-      <div class="tab" data-tab="reorder" onclick="setTab('reorder')">&#128722; Reorder</div>
-      <div class="tab" data-tab="bom" onclick="setTab('bom')">&#129513; BOM / Cells</div>
-      <div class="tab" data-tab="inward" onclick="setTab('inward')">&#128229; Goods-in</div>
-      <div class="tab" data-tab="po" onclick="setTab('po')">&#128203; Purchase Orders</div>
-      <div class="tab" data-tab="locations" onclick="setTab('locations')">&#128205; Locations</div>
-      <div class="tab" data-tab="transfer" onclick="setTab('transfer')">&#128256; Transfer</div>
-      <div class="tab" data-tab="assets" onclick="setTab('assets')">&#127991;&#65039; Assets</div>
-      <div class="tab" data-tab="usage" onclick="setTab('usage')">&#128202; By Project</div>
-      <div class="tab" data-tab="crmproj" onclick="setTab('crmproj')">&#128279; CRM Projects</div>
-      <div class="tab" data-tab="valuation" onclick="setTab('valuation')">&#128181; Valuation</div>
-      <div class="tab" data-tab="billing" onclick="setTab('billing')">&#129534; Billing</div>
-      <div class="tab" data-tab="suppliers" onclick="setTab('suppliers')">&#127981; Suppliers</div>
-      <div class="tab" data-tab="stocktake" onclick="setTab('stocktake')">&#9989; Stock-take</div>
-      <div class="tab" data-tab="qr" onclick="setTab('qr')">&#127991; QR Sheet</div>
-      <div class="tab" data-tab="data" onclick="setTab('data')">&#128259; Excel</div>
-      <div class="tab" data-tab="admin" onclick="setTab('admin')">&#9881;&#65039; Admin Panel</div>
-      <div class="tab" data-tab="pricehist" onclick="setTab('pricehist')">&#128176; Purchase Price History</div>
-      <div class="tab" data-tab="audit" onclick="setTab('audit')">&#128220; Audit Log</div>
-      <a class="tab" href="BOM-MAKER.html" target="_blank" style="text-decoration:none">&#129513; BOM Maker (standalone)</a>
-      <a class="tab" href="taskflow.html" target="_blank" style="text-decoration:none;margin-top:6px;border-top:1px solid var(--sidebar-line);border-radius:0 0 10px 10px;padding-top:12px">&#128203; TaskFlow ↗</a>
+      <div class="tab active" data-tab="dashboard" onclick="setTab('dashboard')"><span class="ti"><svg class="ic-s" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="8" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="11" width="7" height="10" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg></span>Dashboard</div>
+      <div class="tab" data-tab="stock" onclick="setTab('stock')"><span class="ti"><svg class="ic-s" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 8.5v7a1.7 1.7 0 0 1-.9 1.5l-7.2 3.9a1.9 1.9 0 0 1-1.8 0l-7.2-3.9A1.7 1.7 0 0 1 3 15.5v-7A1.7 1.7 0 0 1 3.9 7l7.2-3.9a1.9 1.9 0 0 1 1.8 0L20.1 7a1.7 1.7 0 0 1 .9 1.5Z"/><path d="m3.3 7.6 8.7 4.7 8.7-4.7"/><path d="M12 12.3V21"/></svg></span>Stock</div>
+      <div class="tab" data-tab="ledger" onclick="setTab('ledger')"><span class="ti"><svg class="ic-s" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H6.5A2.5 2.5 0 0 0 4 21.5Z"/><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M8 7h8"/></svg></span>Ledger</div>
+      <div class="tab" data-tab="challans" onclick="setTab('challans')"><span class="ti"><svg class="ic-s" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 21V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v17l-2.5-1.5L14 21l-2-1.5L10 21l-2.5-1.5Z"/><path d="M9 8h6"/><path d="M9 12h6"/></svg></span>Challans</div>
+      <div class="tab" data-tab="visitors" onclick="setTab('visitors')"><span class="ti"><svg class="ic-s" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2" y="4" width="20" height="16" rx="2.5"/><circle cx="9" cy="11" r="2.2"/><path d="M5.7 16.2a3.6 3.6 0 0 1 6.6 0"/><path d="M15.5 9.5H19"/><path d="M15.5 13.5H19"/></svg></span>Gate Pass</div>
+      <div class="tab" data-tab="gate" onclick="setTab('gate')"><span class="ti"><svg class="ic-s" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3 5 5.7v5.6c0 4.2 2.9 7.5 7 9.7 4.1-2.2 7-5.5 7-9.7V5.7Z"/><path d="m9 12 2.2 2.2L15.5 10"/></svg></span>Gate Approve</div>
+      <div class="tab" data-tab="reorder" onclick="setTab('reorder')"><span class="ti"><svg class="ic-s" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20.5 12a8.5 8.5 0 1 1-2.6-6.1"/><path d="M20.5 4v5h-5"/></svg></span>Reorder</div>
+      <div class="tab" data-tab="bom" onclick="setTab('bom')"><span class="ti"><svg class="ic-s" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m12 3 8.5 4.2L12 11.4 3.5 7.2Z"/><path d="m4 12 8 4 8-4"/><path d="m4 16.5 8 4 8-4"/></svg></span>BOM / Cells</div>
+      <div class="tab" data-tab="inward" onclick="setTab('inward')"><span class="ti"><svg class="ic-s" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 10.5v-2A1.7 1.7 0 0 0 20.1 7l-7.2-3.9a1.9 1.9 0 0 0-1.8 0L3.9 7A1.7 1.7 0 0 0 3 8.5v7a1.7 1.7 0 0 0 .9 1.5l7.2 3.9a1.9 1.9 0 0 0 1.8 0l.6-.3"/><path d="m3.3 7.6 8.7 4.7 8.7-4.7"/><path d="M12 12.3v8"/><path d="M18 14.5v6"/><path d="M15 17.5h6"/></svg></span>Goods-in</div>
+      <div class="tab" data-tab="po" onclick="setTab('po')"><span class="ti"><svg class="ic-s" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1"/><path d="M9 10h6"/><path d="M9 14h6"/><path d="M9 18h3"/></svg></span>Purchase Orders</div>
+      <div class="tab" data-tab="locations" onclick="setTab('locations')"><span class="ti"><svg class="ic-s" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z"/><circle cx="12" cy="10" r="2.6"/></svg></span>Locations</div>
+      <div class="tab" data-tab="transfer" onclick="setTab('transfer')"><span class="ti"><svg class="ic-s" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 8h13"/><path d="m14 5 3 3-3 3"/><path d="M20 16H7"/><path d="m10 13-3 3 3 3"/></svg></span>Transfer</div>
+      <div class="tab" data-tab="assets" onclick="setTab('assets')"><span class="ti"><svg class="ic-s" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20.6 12.4 12.4 20.6a2 2 0 0 1-2.8 0L3 14V4.5A1.5 1.5 0 0 1 4.5 3H14l6.6 6.6a2 2 0 0 1 0 2.8Z"/><circle cx="8" cy="8" r="1.6"/></svg></span>Assets</div>
+      <div class="tab" data-tab="usage" onclick="setTab('usage')"><span class="ti"><svg class="ic-s" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3a9 9 0 1 0 9 9h-9Z"/><path d="M15.5 2.6A9 9 0 0 1 21.4 8.5H15.5Z"/></svg></span>By Project</div>
+      <div class="tab" data-tab="crmproj" onclick="setTab('crmproj')"><span class="ti"><svg class="ic-s" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10.5 13.5a4 4 0 0 0 5.7 0l2.9-2.9a4 4 0 0 0-5.7-5.7l-1.4 1.4"/><path d="M13.5 10.5a4 4 0 0 0-5.7 0l-2.9 2.9a4 4 0 0 0 5.7 5.7l1.4-1.4"/></svg></span>CRM Projects</div>
+      <div class="tab" data-tab="valuation" onclick="setTab('valuation')"><span class="ti"><svg class="ic-s" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 10v4"/><path d="M18 10v4"/></svg></span>Valuation</div>
+      <div class="tab" data-tab="billing" onclick="setTab('billing')"><span class="ti"><svg class="ic-s" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 21V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v17l-2.5-1.5L14 21l-2-1.5L10 21l-2.5-1.5Z"/><path d="M9 8h6"/><path d="M9 12h6"/></svg></span>Billing</div>
+      <div class="tab" data-tab="suppliers" onclick="setTab('suppliers')"><span class="ti"><svg class="ic-s" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 21V10l6 4V10l6 4V7l6 3v11Z"/><path d="M7.5 21v-3"/><path d="M13 21v-3"/><path d="M18 21v-3"/></svg></span>Suppliers</div>
+      <div class="tab" data-tab="stocktake" onclick="setTab('stocktake')"><span class="ti"><svg class="ic-s" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1"/><path d="m9 13 2 2 4-4"/></svg></span>Stock-take</div>
+      <div class="tab" data-tab="qr" onclick="setTab('qr')"><span class="ti"><svg class="ic-s" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M14.5 14.5h2.5v2.5h-2.5z"/><path d="M20.5 14.5v2"/><path d="M14.5 20.5h6"/></svg></span>QR Sheet</div>
+      <div class="tab" data-tab="data" onclick="setTab('data')"><span class="ti"><svg class="ic-s" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 9v12"/><path d="M3 15h18"/></svg></span>Excel</div>
+      <div class="tab" data-tab="admin" onclick="setTab('admin')"><span class="ti"><svg class="ic-s" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3.2"/><path d="M19.1 14.6a1.5 1.5 0 0 0 .3 1.7l.1.1a1.9 1.9 0 1 1-2.7 2.7l-.1-.1a1.5 1.5 0 0 0-2.5 1.1v.3a1.9 1.9 0 1 1-3.8 0v-.2a1.5 1.5 0 0 0-2.5-1.1l-.1.1a1.9 1.9 0 1 1-2.7-2.7l.1-.1a1.5 1.5 0 0 0-1.1-2.5h-.2a1.9 1.9 0 1 1 0-3.8h.3a1.5 1.5 0 0 0 1.1-2.5l-.1-.1a1.9 1.9 0 1 1 2.7-2.7l.1.1a1.5 1.5 0 0 0 2.5-1.1V3.7a1.9 1.9 0 1 1 3.8 0V4a1.5 1.5 0 0 0 2.5 1.1l.1-.1a1.9 1.9 0 1 1 2.7 2.7l-.1.1a1.5 1.5 0 0 0 1.1 2.5h.3a1.9 1.9 0 1 1 0 3.8h-.3a1.5 1.5 0 0 0-1.4.9Z"/></svg></span>Admin Panel</div>
+      <div class="tab" data-tab="pricehist" onclick="setTab('pricehist')"><span class="ti"><svg class="ic-s" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m3 17 6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg></span>Purchase Price History</div>
+      <div class="tab" data-tab="audit" onclick="setTab('audit')"><span class="ti"><svg class="ic-s" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 3h12a2 2 0 0 1 2 2v13a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V6"/><path d="M4 6a2 2 0 0 1 4 0v2H4Z"/><path d="M9.5 8h8"/><path d="M9.5 12h8"/><path d="M9.5 16h5"/></svg></span>Audit Log</div>
+      <a class="tab" href="BOM-MAKER.html" target="_blank" style="text-decoration:none"><span class="ti"><svg class="ic-s" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m12 3 8.5 4.2L12 11.4 3.5 7.2Z"/><path d="m4 12 8 4 8-4"/><path d="m4 16.5 8 4 8-4"/></svg></span>BOM Maker (standalone)</a>
+      <a class="tab" href="taskflow.html" target="_blank" style="text-decoration:none;margin-top:6px;border-top:1px solid var(--sidebar-line);border-radius:0 0 10px 10px;padding-top:12px"><span class="ti"><svg class="ic-s" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1"/><path d="M9 10h6"/><path d="M9 14h6"/><path d="M9 18h3"/></svg></span>TaskFlow<span class="ti" style="margin-left:auto"><svg class="ic-s" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 4h6v6"/><path d="M20 4 11 13"/><path d="M18 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h5"/></svg></span></a>
     </div>
   </aside>
   <div class="sboverlay" id="sbOverlay" onclick="toggleSidebar(false)"></div>
   <nav class="mobmods noprint" id="mobmods"></nav>
 
   <div class="top">
-    <button class="menuBtn noprint" onclick="toggleSidebar()" aria-label="Menu">☰</button>
+    <button class="menuBtn noprint" onclick="toggleSidebar()" aria-label="Menu"><svg class="ic-s" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg></button>
     <img class="toplogo" id="topLogoImg" alt="CESS Dynamics">
     <div class="brand">CESS Stock<small>Inventory Control</small></div>
     <div class="gsearch noprint" id="gsearchWrap"><input id="gsearch" type="search" placeholder="Search anything — tab, part, project, supplier..." autocomplete="off" oninput="globalSearch()" onfocus="globalSearch()" onkeydown="if(event.key==='Escape')closeGSearch()"><div class="gsbox" id="gsbox"></div></div>
     <div class="right">
       <span class="synctag" id="syncTag"><span class="dot"></span><span id="syncLbl">Local</span></span>
-      <button class="lockbtn" id="lockBtn" onclick="toggleLock()">&#128274; Prices</button>
+      <button class="lockbtn" id="lockBtn" onclick="toggleLock()"><span class="ti"><svg class="ic-s" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="4.5" y="10" width="15" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>Prices</button>
       <div class="userbadge"><div class="av" id="uAv">N</div><div><div class="nm" id="uNm">Nityam</div><div class="rl" id="uRl">admin</div></div></div>
-      <button class="logout" onclick="doLogout()">&#9099;</button>
+      <button class="logout" onclick="doLogout()"><svg class="ic-s" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/><path d="M10 17 5 12l5-5"/><path d="M5 12h11"/></svg></button>
     </div>
   </div>
+  <!-- Mobile sub-tab strip: on phones the sidebar (which holds #tabbar) is a
+       hidden drawer, so switching sub-tab used to mean opening the menu every
+       time. This mirrors the current module's tabs as a sticky scrollable row. -->
+  <nav class="subtabs noprint" id="subtabs" aria-label="Section"></nav>
   <div class="wrap">
     <div class="scanbar noprint" id="scanbar">
-      <div class="row"><button class="bigscan" onclick="openCart()">&#128247; Scan to Cart</button><button class="cartcount empty" id="cartBtn" onclick="openCartReview()">&#128722; <span id="cartN">0</span></button></div>
+      <div class="row"><button class="bigscan" onclick="openCart()"><span class="ti"><svg class="ic-s" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 8V5.5A2.5 2.5 0 0 1 5.5 3H8"/><path d="M16 3h2.5A2.5 2.5 0 0 1 21 5.5V8"/><path d="M21 16v2.5a2.5 2.5 0 0 1-2.5 2.5H16"/><path d="M8 21H5.5A2.5 2.5 0 0 1 3 18.5V16"/><path d="M3 12h18"/></svg></span>Scan to Cart</button><button class="cartcount empty" id="cartBtn" onclick="openCartReview()"><span class="ti"><svg class="ic-s" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="9.5" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2.6l2.3 11.4a1.6 1.6 0 0 0 1.6 1.3h8.9a1.6 1.6 0 0 0 1.6-1.3L21 7H5.3"/></svg></span> <span id="cartN">0</span></button></div>
       <div class="row" style="margin-top:10px"><input id="scanInput" placeholder="No camera? Type SKU or category code + Enter..." autocomplete="off"></div>
       <div class="hint">Scan a <b>part QR</b> or a <b>cupboard category QR</b> &rarr; items appear &rarr; add to cart with qty &rarr; checkout. Issues generate a challan PDF.</div>
     </div>
@@ -823,7 +886,7 @@ window.addEventListener('unhandledrejection', function(ev){
       <div class="kpi priceKpi"><div class="n" id="kValue">&mdash;</div><div class="l">Stock Value</div></div>
       <div class="kpi alert"><div class="n" id="kLow">0</div><div class="l">Low / Out</div></div>
     </div>
-    <div class="sechd noprint" id="sechd"><div class="ic" id="sechdIc">&#128202;</div><div><div class="cr" id="sechdCrumb">Inventory</div><div class="tt" id="sechdTitle">Dashboard</div></div></div>
+    <div class="sechd noprint" id="sechd"><div class="ic" id="sechdIc"><svg class="ic-s" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="8" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="11" width="7" height="10" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg></div><div><div class="cr" id="sechdCrumb">Inventory</div><div class="tt" id="sechdTitle">Dashboard</div></div></div>
     <div id="tab-home" style="display:none">
       <div id="homeHead" style="margin:2px 0 16px"><div style="font-size:22px;font-weight:700;letter-spacing:-.02em" id="homeHi">Hello</div><div id="homeChips" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"></div></div>
       <div class="homegrid" id="homeGrid"></div>
@@ -831,10 +894,10 @@ window.addEventListener('unhandledrejection', function(ev){
     <div id="tab-dashboard" style="display:none">
       <div class="dashgrid" id="dashKpis"></div>
       <div class="dashcols">
-        <div class="panel pad"><div class="dashhd">&#9888;&#65039; Needs attention</div><div id="dashLow"></div></div>
-        <div class="panel pad"><div class="dashhd">&#128338; Recent activity</div><div id="dashActivity"></div></div>
+        <div class="panel pad"><div class="dashhd"><span class="ti"><svg class="ic-s" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10.3 3.9 2.5 17.4A2 2 0 0 0 4.2 20.4h15.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4.5"/><path d="M12 17.2h.01"/></svg></span> Needs attention</div><div id="dashLow"></div></div>
+        <div class="panel pad"><div class="dashhd"><span class="ti"><svg class="ic-s" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7v5.2l3.2 2"/></svg></span> Recent activity</div><div id="dashActivity"></div></div>
       </div>
-      <div class="panel pad"><div class="dashhd">&#128202; Stock value by category</div><div id="dashCats"></div></div>
+      <div class="panel pad"><div class="dashhd"><span class="ti"><svg class="ic-s" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/><path d="M22 20H2"/></svg></span> Stock value by category</div><div id="dashCats"></div></div>
       
     </div>
     <div id="tab-stock" style="display:none">
@@ -863,7 +926,7 @@ window.addEventListener('unhandledrejection', function(ev){
       <div id="poList"></div>
     </div>
     <div id="tab-locations" style="display:none">
-      <div class="panel pad" style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px"><div><h2 style="font-size:17px">&#128205; Storage Locations</h2><div class="sub" style="color:var(--slate);font-size:13px;margin-top:3px">Create &amp; name your bins, drawers, racks and cupboards. Stock is tracked per location.</div></div><button class="btn orange" onclick="openLoc()">&#65291; Add Location</button></div></div>
+      <div class="panel pad" style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px"><div><h2 style="font-size:17px"><span class="ti"><svg class="ic-s" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z"/><circle cx="12" cy="10" r="2.6"/></svg></span>Storage Locations</h2><div class="sub" style="color:var(--slate);font-size:13px;margin-top:3px">Create &amp; name your bins, drawers, racks and cupboards. Stock is tracked per location.</div></div><button class="btn orange" onclick="openLoc()">&#65291; Add Location</button></div></div>
       <div id="locList2"></div>
     </div>
     <div id="tab-transfer" style="display:none"><div class="panel pad"><h2 style="font-size:17px">Stock Transfer</h2><div class="sub" style="color:var(--slate);font-size:13px;margin:4px 0 14px">Move stock between locations.</div><div class="fld"><label>Part</label><select id="trPart"></select></div><div class="two"><div class="fld"><label>From</label><input id="trFrom" readonly></div><div class="fld"><label>To location</label><input id="trTo" data-list="locList" placeholder="Surat site"></div></div><div class="fld"><label>Quantity</label><input id="trQty" type="number" value="1" min="1"></div><button class="btn purple" onclick="postTransfer()">&#128256; Post Transfer</button></div></div>
@@ -887,7 +950,7 @@ window.addEventListener('unhandledrejection', function(ev){
       <div id="valView"></div>
     </div>
     <div id="tab-visitors" style="display:none">
-      <div class="panel pad" style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px"><div><h2 style="font-size:17px">&#129694; Visitor Gate Pass</h2><div class="sub" style="color:var(--slate);font-size:13px;margin-top:3px">For a <b>person</b> visiting the facility. Generates a QR pass that the gate approves.</div></div><button class="btn orange" onclick="openVisitor()">&#65291; New Gate Pass</button></div></div>
+      <div class="panel pad" style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px"><div><h2 style="font-size:17px"><span class="ti"><svg class="ic-s" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2" y="4" width="20" height="16" rx="2.5"/><circle cx="9" cy="11" r="2.2"/><path d="M5.7 16.2a3.6 3.6 0 0 1 6.6 0"/><path d="M15.5 9.5H19"/><path d="M15.5 13.5H19"/></svg></span>Visitor Gate Pass</h2><div class="sub" style="color:var(--slate);font-size:13px;margin-top:3px">For a <b>person</b> visiting the facility. Generates a QR pass that the gate approves.</div></div><button class="btn orange" onclick="openVisitor()">&#65291; New Gate Pass</button></div></div>
       <div class="toolbar noprint"><select id="vpFilter" onchange="renderVisitors()"><option value="">All passes</option><option value="pending">Awaiting approval</option><option value="approved">Approved</option><option value="rejected">Rejected</option></select></div>
       <div id="vpList"></div>
     </div>
@@ -911,9 +974,9 @@ window.addEventListener('unhandledrejection', function(ev){
     <div id="tab-stocktake" style="display:none"><div class="panel pad"><h2 style="font-size:17px">Physical Stock-take</h2><div class="sub" style="color:var(--slate);font-size:13px;margin:4px 0 14px">Count bins, enter actuals, post adjustments.</div><div class="stkrow" style="font-weight:700;color:var(--slate);font-size:12px;text-transform:uppercase"><div>Part</div><div style="text-align:center">System</div><div style="text-align:center">Counted</div><div style="text-align:center">Diff</div></div><div id="stkList"></div><div class="modal-acts"><button class="btn green" onclick="postStocktake()">Post Adjustments</button></div></div></div>
     <div id="tab-qr" style="display:none"><div class="toolbar noprint"><button class="btn ghost" id="qrModeP" onclick="qrMode='part';renderQRSheet()">Part QRs</button><button class="btn ghost" id="qrModeC" onclick="qrMode='cat';renderQRSheet()">Category (cupboard) QRs</button><button class="btn ghost" id="qrModeL" onclick="qrMode='loc';renderQRSheet()">Location QRs</button><select id="qrCat" onchange="renderQRSheet()"><option value="">All</option></select><select id="qrLocType" onchange="renderQRSheet()" style="display:none"><option value="">All types</option></select><button class="btn orange" onclick="printQRSheet()">&#128424; Print</button></div><div class="panel pad"><div id="qrSheetWrap"></div></div></div>
     <div id="tab-data" style="display:none"><div class="panel pad"><h2 style="font-size:17px">Excel Export / Import</h2><div class="sub" style="color:var(--slate);font-size:13px;margin:4px 0 16px">Download a workbook or bulk-load parts.</div><div class="modal-acts" style="margin-top:0"><button class="btn green" onclick="exportXLSX()">&#11015; Export (.xlsx)</button><button class="btn ghost" onclick="document.getElementById('xlsxIn').click()">&#11014; Import parts</button><input type="file" id="xlsxIn" accept=".xlsx,.xls,.csv" style="display:none" onchange="importXLSX(event)"></div><div class="sectlbl">Import columns</div><div style="font-size:13px;color:var(--slate)">SKU, Name, Category, Location, Unit, Min, Cost, Supplier, OpeningStock</div><div class="sectlbl">Live Google Sheet sync</div><div style="font-size:13px;color:var(--slate);line-height:1.6">For a sheet that updates <b>automatically in both places</b> (Supabase &harr; Google Sheets), follow the one-time setup guide. Until then, use Export/Import above — it covers every sheet.</div><div class="modal-acts" style="margin-top:8px"><a class="btn purple" href="CESS-google-sheets-sync.html" target="_blank" style="text-decoration:none">&#128279; Open sync setup guide</a></div><div class="sectlbl">Backup</div><div class="modal-acts" style="margin-top:0"><button class="btn ghost" onclick="exportJSON()">&#11015; Backup (.json)</button><button class="btn ghost" onclick="document.getElementById('jsonIn').click()">&#11014; Restore</button><input type="file" id="jsonIn" accept=".json" style="display:none" onchange="importJSON(event)"></div></div></div>
-    <div id="tab-admin" style="display:none"><div class="panel pad" style="margin-bottom:16px"><h2 style="font-size:17px">&#9881;&#65039; Admin Control Panel</h2><div class="sub" style="color:var(--slate);font-size:13px;margin:4px 0 0">Create users, assign roles, and tick exactly which tabs and powers each person gets.</div></div><div id="adminBody"></div></div>
-    <div id="tab-pricehist" style="display:none"><div class="panel pad" style="margin-bottom:14px"><h2 style="font-size:17px">&#128176; Purchase Price History</h2><div class="sub" style="color:var(--slate);font-size:13px;margin:4px 0 0">Search any part to see every purchase — rate, PO reference, supplier and the PO document. Same material bought at different prices stays separately traceable.</div></div><div class="toolbar noprint"><input type="search" id="phSearch" placeholder="Search part name or SKU…" oninput="phSearchInput()" autocomplete="off" aria-label="Search part for price history" style="flex:1;min-width:0"><button class="btn ghost" onclick="document.getElementById('phSearch').value='';renderPhResults()">Clear</button></div><div id="phResults"></div><div id="phView"></div></div>
-    <div id="tab-audit" style="display:none"><div class="panel pad" style="margin-bottom:14px"><h2 style="font-size:17px">&#128220; Audit Log</h2><div class="sub" style="color:var(--slate);font-size:13px;margin:4px 0 0">Every login, issue, approval, bill and edit — admins only.</div></div><div class="toolbar noprint"><input id="auditSearch" placeholder="Filter by user / action / item" oninput="renderAudit()" style="flex:1"></div><div id="auditList"></div></div>
+    <div id="tab-admin" style="display:none"><div class="panel pad" style="margin-bottom:16px"><h2 style="font-size:17px"><span class="ti"><svg class="ic-s" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3.2"/><path d="M19.1 14.6a1.5 1.5 0 0 0 .3 1.7l.1.1a1.9 1.9 0 1 1-2.7 2.7l-.1-.1a1.5 1.5 0 0 0-2.5 1.1v.3a1.9 1.9 0 1 1-3.8 0v-.2a1.5 1.5 0 0 0-2.5-1.1l-.1.1a1.9 1.9 0 1 1-2.7-2.7l.1-.1a1.5 1.5 0 0 0-1.1-2.5h-.2a1.9 1.9 0 1 1 0-3.8h.3a1.5 1.5 0 0 0 1.1-2.5l-.1-.1a1.9 1.9 0 1 1 2.7-2.7l.1.1a1.5 1.5 0 0 0 2.5-1.1V3.7a1.9 1.9 0 1 1 3.8 0V4a1.5 1.5 0 0 0 2.5 1.1l.1-.1a1.9 1.9 0 1 1 2.7 2.7l-.1.1a1.5 1.5 0 0 0 1.1 2.5h.3a1.9 1.9 0 1 1 0 3.8h-.3a1.5 1.5 0 0 0-1.4.9Z"/></svg></span>Admin Control Panel</h2><div class="sub" style="color:var(--slate);font-size:13px;margin:4px 0 0">Create users, assign roles, and tick exactly which tabs and powers each person gets.</div></div><div id="adminBody"></div></div>
+    <div id="tab-pricehist" style="display:none"><div class="panel pad" style="margin-bottom:14px"><h2 style="font-size:17px"><span class="ti"><svg class="ic-s" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m3 17 6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg></span>Purchase Price History</h2><div class="sub" style="color:var(--slate);font-size:13px;margin:4px 0 0">Search any part to see every purchase — rate, PO reference, supplier and the PO document. Same material bought at different prices stays separately traceable.</div></div><div class="toolbar noprint"><input type="search" id="phSearch" placeholder="Search part name or SKU…" oninput="phSearchInput()" autocomplete="off" aria-label="Search part for price history" style="flex:1;min-width:0"><button class="btn ghost" onclick="document.getElementById('phSearch').value='';renderPhResults()">Clear</button></div><div id="phResults"></div><div id="phView"></div></div>
+    <div id="tab-audit" style="display:none"><div class="panel pad" style="margin-bottom:14px"><h2 style="font-size:17px"><span class="ti"><svg class="ic-s" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 3h12a2 2 0 0 1 2 2v13a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V6"/><path d="M4 6a2 2 0 0 1 4 0v2H4Z"/><path d="M9.5 8h8"/><path d="M9.5 12h8"/><path d="M9.5 16h5"/></svg></span>Audit Log</h2><div class="sub" style="color:var(--slate);font-size:13px;margin:4px 0 0">Every login, issue, approval, bill and edit — admins only.</div></div><div class="toolbar noprint"><input id="auditSearch" placeholder="Filter by user / action / item" oninput="renderAudit()" style="flex:1"></div><div id="auditList"></div></div>
     <div class="footer">CESS Dynamics &middot; Inventory Control &middot; <span id="footMode">local</span></div>
   </div>
 </div>
@@ -982,7 +1045,65 @@ const ALL_POWERS=[['addPart','Add / edit parts'],['issue','Issue stock (OUT)'],[
 // canP: new granular power with legacy fallback so existing users keep working
 function canP(p,legacy){return can(p)||(legacy&&can(legacy))||me.role==='admin';}
 // Modules group the tabs. Admin can grant any tab to any user regardless of module.
-const MODULES=[['inventory','📦 Inventory',['stock','ledger','reorder','bom','inward','po','locations','transfer','assets','suppliers','stocktake','qr','data']],['gatepass','📋 Dispatch',['challans','visitors','gate']],['billing','🧾 Billing',['billing','usage','crmproj','valuation']],['admin','⚙️ Admin',['admin','dashboard','po','valuation','pricehist','audit']]];
+/* ── Inline SVG icon set ───────────────────────────────────────────────
+   Replaces the emoji that used to stand in for interface icons. Emoji
+   render differently on every OS and ignore currentColor, so active
+   states never picked up their own text colour. These do.            */
+var ICO_P={
+ "dashboard":"<rect x=\"3\" y=\"3\" width=\"7\" height=\"8\" rx=\"1.5\"/><rect x=\"14\" y=\"3\" width=\"7\" height=\"5\" rx=\"1.5\"/><rect x=\"14\" y=\"11\" width=\"7\" height=\"10\" rx=\"1.5\"/><rect x=\"3\" y=\"14\" width=\"7\" height=\"7\" rx=\"1.5\"/>",
+ "package":"<path d=\"M21 8.5v7a1.7 1.7 0 0 1-.9 1.5l-7.2 3.9a1.9 1.9 0 0 1-1.8 0l-7.2-3.9A1.7 1.7 0 0 1 3 15.5v-7A1.7 1.7 0 0 1 3.9 7l7.2-3.9a1.9 1.9 0 0 1 1.8 0L20.1 7a1.7 1.7 0 0 1 .9 1.5Z\"/><path d=\"m3.3 7.6 8.7 4.7 8.7-4.7\"/><path d=\"M12 12.3V21\"/>",
+ "book":"<path d=\"M4 4.5A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H6.5A2.5 2.5 0 0 0 4 21.5Z\"/><path d=\"M4 19.5A2.5 2.5 0 0 1 6.5 17H20\"/><path d=\"M8 7h8\"/>",
+ "receipt":"<path d=\"M5 21V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v17l-2.5-1.5L14 21l-2-1.5L10 21l-2.5-1.5Z\"/><path d=\"M9 8h6\"/><path d=\"M9 12h6\"/>",
+ "idcard":"<rect x=\"2\" y=\"4\" width=\"20\" height=\"16\" rx=\"2.5\"/><circle cx=\"9\" cy=\"11\" r=\"2.2\"/><path d=\"M5.7 16.2a3.6 3.6 0 0 1 6.6 0\"/><path d=\"M15.5 9.5H19\"/><path d=\"M15.5 13.5H19\"/>",
+ "shieldcheck":"<path d=\"M12 3 5 5.7v5.6c0 4.2 2.9 7.5 7 9.7 4.1-2.2 7-5.5 7-9.7V5.7Z\"/><path d=\"m9 12 2.2 2.2L15.5 10\"/>",
+ "refresh":"<path d=\"M20.5 12a8.5 8.5 0 1 1-2.6-6.1\"/><path d=\"M20.5 4v5h-5\"/>",
+ "layers":"<path d=\"m12 3 8.5 4.2L12 11.4 3.5 7.2Z\"/><path d=\"m4 12 8 4 8-4\"/><path d=\"m4 16.5 8 4 8-4\"/>",
+ "boxplus":"<path d=\"M21 10.5v-2A1.7 1.7 0 0 0 20.1 7l-7.2-3.9a1.9 1.9 0 0 0-1.8 0L3.9 7A1.7 1.7 0 0 0 3 8.5v7a1.7 1.7 0 0 0 .9 1.5l7.2 3.9a1.9 1.9 0 0 0 1.8 0l.6-.3\"/><path d=\"m3.3 7.6 8.7 4.7 8.7-4.7\"/><path d=\"M12 12.3v8\"/><path d=\"M18 14.5v6\"/><path d=\"M15 17.5h6\"/>",
+ "clipboard":"<rect x=\"5\" y=\"4\" width=\"14\" height=\"17\" rx=\"2\"/><path d=\"M9 4V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1\"/><path d=\"M9 10h6\"/><path d=\"M9 14h6\"/><path d=\"M9 18h3\"/>",
+ "clipboardcheck":"<rect x=\"5\" y=\"4\" width=\"14\" height=\"17\" rx=\"2\"/><path d=\"M9 4V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1\"/><path d=\"m9 13 2 2 4-4\"/>",
+ "pin":"<path d=\"M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z\"/><circle cx=\"12\" cy=\"10\" r=\"2.6\"/>",
+ "transfer":"<path d=\"M4 8h13\"/><path d=\"m14 5 3 3-3 3\"/><path d=\"M20 16H7\"/><path d=\"m10 13-3 3 3 3\"/>",
+ "tag":"<path d=\"M20.6 12.4 12.4 20.6a2 2 0 0 1-2.8 0L3 14V4.5A1.5 1.5 0 0 1 4.5 3H14l6.6 6.6a2 2 0 0 1 0 2.8Z\"/><circle cx=\"8\" cy=\"8\" r=\"1.6\"/>",
+ "pie":"<path d=\"M12 3a9 9 0 1 0 9 9h-9Z\"/><path d=\"M15.5 2.6A9 9 0 0 1 21.4 8.5H15.5Z\"/>",
+ "link":"<path d=\"M10.5 13.5a4 4 0 0 0 5.7 0l2.9-2.9a4 4 0 0 0-5.7-5.7l-1.4 1.4\"/><path d=\"M13.5 10.5a4 4 0 0 0-5.7 0l-2.9 2.9a4 4 0 0 0 5.7 5.7l1.4-1.4\"/>",
+ "banknote":"<rect x=\"2\" y=\"6\" width=\"20\" height=\"12\" rx=\"2\"/><circle cx=\"12\" cy=\"12\" r=\"2.6\"/><path d=\"M6 10v4\"/><path d=\"M18 10v4\"/>",
+ "factory":"<path d=\"M3 21V10l6 4V10l6 4V7l6 3v11Z\"/><path d=\"M7.5 21v-3\"/><path d=\"M13 21v-3\"/><path d=\"M18 21v-3\"/>",
+ "qr":"<rect x=\"3\" y=\"3\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"14\" y=\"3\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"3\" y=\"14\" width=\"7\" height=\"7\" rx=\"1.5\"/><path d=\"M14.5 14.5h2.5v2.5h-2.5z\"/><path d=\"M20.5 14.5v2\"/><path d=\"M14.5 20.5h6\"/>",
+ "sheet":"<rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"2\"/><path d=\"M3 9h18\"/><path d=\"M9 9v12\"/><path d=\"M3 15h18\"/>",
+ "settings":"<circle cx=\"12\" cy=\"12\" r=\"3.2\"/><path d=\"M19.1 14.6a1.5 1.5 0 0 0 .3 1.7l.1.1a1.9 1.9 0 1 1-2.7 2.7l-.1-.1a1.5 1.5 0 0 0-2.5 1.1v.3a1.9 1.9 0 1 1-3.8 0v-.2a1.5 1.5 0 0 0-2.5-1.1l-.1.1a1.9 1.9 0 1 1-2.7-2.7l.1-.1a1.5 1.5 0 0 0-1.1-2.5h-.2a1.9 1.9 0 1 1 0-3.8h.3a1.5 1.5 0 0 0 1.1-2.5l-.1-.1a1.9 1.9 0 1 1 2.7-2.7l.1.1a1.5 1.5 0 0 0 2.5-1.1V3.7a1.9 1.9 0 1 1 3.8 0V4a1.5 1.5 0 0 0 2.5 1.1l.1-.1a1.9 1.9 0 1 1 2.7 2.7l-.1.1a1.5 1.5 0 0 0 1.1 2.5h.3a1.9 1.9 0 1 1 0 3.8h-.3a1.5 1.5 0 0 0-1.4.9Z\"/>",
+ "trending":"<path d=\"m3 17 6-6 4 4 8-8\"/><path d=\"M15 7h6v6\"/>",
+ "scroll":"<path d=\"M6 3h12a2 2 0 0 1 2 2v13a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V6\"/><path d=\"M4 6a2 2 0 0 1 4 0v2H4Z\"/><path d=\"M9.5 8h8\"/><path d=\"M9.5 12h8\"/><path d=\"M9.5 16h5\"/>",
+ "external":"<path d=\"M14 4h6v6\"/><path d=\"M20 4 11 13\"/><path d=\"M18 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h5\"/>",
+ "house":"<path d=\"M3 10.5 12 3l9 7.5\"/><path d=\"M5.5 9.5V20a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1V9.5\"/><path d=\"M9.5 21v-6h5v6\"/>",
+ "menu":"<path d=\"M4 6h16\"/><path d=\"M4 12h16\"/><path d=\"M4 18h16\"/>",
+ "scan":"<path d=\"M3 8V5.5A2.5 2.5 0 0 1 5.5 3H8\"/><path d=\"M16 3h2.5A2.5 2.5 0 0 1 21 5.5V8\"/><path d=\"M21 16v2.5a2.5 2.5 0 0 1-2.5 2.5H16\"/><path d=\"M8 21H5.5A2.5 2.5 0 0 1 3 18.5V16\"/><path d=\"M3 12h18\"/>",
+ "file":"<path d=\"M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z\"/><path d=\"M14 3v5h5\"/><path d=\"M9 13h6\"/><path d=\"M9 17h4\"/>",
+ "cart":"<circle cx=\"9.5\" cy=\"20\" r=\"1.4\"/><circle cx=\"18\" cy=\"20\" r=\"1.4\"/><path d=\"M2 3h2.6l2.3 11.4a1.6 1.6 0 0 0 1.6 1.3h8.9a1.6 1.6 0 0 0 1.6-1.3L21 7H5.3\"/>",
+ "camera":"<path d=\"M4 8h3l1.5-2h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1Z\"/><circle cx=\"12\" cy=\"13.5\" r=\"3.4\"/>",
+ "clock":"<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 7v5.2l3.2 2\"/>",
+ "alert":"<path d=\"M10.3 3.9 2.5 17.4A2 2 0 0 0 4.2 20.4h15.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z\"/><path d=\"M12 9v4.5\"/><path d=\"M12 17.2h.01\"/>",
+ "bars":"<path d=\"M4 20V10\"/><path d=\"M10 20V4\"/><path d=\"M16 20v-7\"/><path d=\"M22 20H2\"/>",
+ "lock":"<rect x=\"4.5\" y=\"10\" width=\"15\" height=\"11\" rx=\"2\"/><path d=\"M8 10V7a4 4 0 0 1 8 0v3\"/>",
+ "logout":"<path d=\"M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3\"/><path d=\"M10 17 5 12l5-5\"/><path d=\"M5 12h11\"/>",
+ "bell":"<path d=\"M18 8.5a6 6 0 1 0-12 0c0 6-2 7.5-2 7.5h16s-2-1.5-2-7.5\"/><path d=\"M13.7 20a2 2 0 0 1-3.4 0\"/>",
+ "cloud":"<path d=\"M17.5 19H7a4.5 4.5 0 0 1-.6-8.96A6 6 0 0 1 17.8 9.2 3.9 3.9 0 0 1 17.5 19Z\"/>",
+ "printer":"<path d=\"M6 9V3h12v6\"/><rect x=\"3\" y=\"9\" width=\"18\" height=\"8\" rx=\"2\"/><path d=\"M6 14h12v7H6Z\"/>",
+ "users":"<path d=\"M15.5 20v-1.8a3.6 3.6 0 0 0-3.6-3.6H6.6A3.6 3.6 0 0 0 3 18.2V20\"/><circle cx=\"9.2\" cy=\"7.5\" r=\"3.5\"/><path d=\"M21 20v-1.8a3.6 3.6 0 0 0-2.7-3.5\"/><path d=\"M15.8 4.1a3.6 3.6 0 0 1 0 6.9\"/>"
+};
+/* module ids and a few tab ids resolve to a glyph by alias */
+var ICO_ALIAS={inventory:'package',gatepass:'file',billing:'receipt',admin:'settings',
+  home:'house',stock:'package',ledger:'book',challans:'receipt',visitors:'idcard',
+  gate:'shieldcheck',reorder:'refresh',bom:'layers',inward:'boxplus',po:'clipboard',
+  locations:'pin',transfer:'transfer',assets:'tag',usage:'pie',crmproj:'link',
+  valuation:'banknote',suppliers:'factory',stocktake:'clipboardcheck',qr:'qr',
+  data:'sheet',pricehist:'trending',audit:'scroll',more:'menu'};
+function ICO(n,size){
+  var d=ICO_P[n]||ICO_P[ICO_ALIAS[n]]||ICO_P.file, s=size||18;
+  return '<svg class="ic-s" width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" '+
+         'stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" '+
+         'aria-hidden="true" focusable="false">'+d+'</svg>';
+}
+const MODULES=[['inventory','Inventory',['stock','ledger','reorder','bom','inward','po','locations','transfer','assets','suppliers','stocktake','qr','data']],['gatepass','Dispatch',['challans','visitors','gate']],['billing','Billing',['billing','usage','crmproj','valuation']],['admin','Admin',['admin','dashboard','po','valuation','pricehist','audit']]];
 function moduleOf(tab){for(const m of MODULES)if(m[2].includes(tab))return m[0];return 'inventory';}
 const PRESETS={
   admin:{tabs:ALL_TABS.map(t=>t[0]),powers:ALL_POWERS.map(p=>p[0])},
@@ -1193,6 +1314,7 @@ function enterLocal(){CLOUD=false;me={name:'Admin (local)',role:'admin',email:''
 
 function enterApp(){
   document.getElementById('landing').style.display='none';document.getElementById('app').style.display='block';window.__startTab=(window.innerWidth<=900)?'home':'stock';
+  try{syncTopHeight();setTimeout(syncTopHeight,300);}catch(e){CESSLOG.cap(e);}
   document.getElementById('uNm').textContent=me.name;document.getElementById('uRl').textContent=me.role;document.getElementById('uAv').textContent=(me.name[0]||'U').toUpperCase();
   const st=document.getElementById('syncTag'),sl=document.getElementById('syncLbl');
   if(CLOUD){st.className='synctag';sl.textContent='Live sync';document.getElementById('footMode').textContent='cloud · live sync';}else{st.className='synctag local';sl.textContent='Local';document.getElementById('footMode').textContent='local (this device)';}
@@ -1203,27 +1325,65 @@ function enterApp(){
   refreshCrmProjects();
 }
 function visibleModules(){return MODULES.filter(m=>m[2].some(t=>t==='admin'?me.role==='admin':hasTab(t)));}
-function buildModuleBar(){const mods=visibleModules();const bar=document.getElementById('modulebar');if(bar){bar.innerHTML=mods.map(m=>{const parts=m[1].split(' ');const ic=parts[0];const lbl=parts.slice(1).join(' ');return '<button class="modbtn'+(m[0]===currentModule?' active':'')+'" onclick="setModule(\''+m[0]+'\')"><span class="mi">'+ic+'</span><span>'+lbl+'</span></button>';}).join('');bar.style.display=mods.length>1?'flex':'none';}
+function buildModuleBar(){const mods=visibleModules();const bar=document.getElementById('modulebar');if(bar){bar.innerHTML=mods.map(m=>{const ic=ICO(m[0]);const lbl=m[1];return '<button class="modbtn'+(m[0]===currentModule?' active':'')+'" onclick="setModule(\''+m[0]+'\')"><span class="mi">'+ic+'</span><span>'+lbl+'</span></button>';}).join('');bar.style.display=mods.length>1?'flex':'none';}
   const mob=document.getElementById('mobmods');if(mob){
   const cur=window.__curTab;
   const cell=(ic,label,onclick,active)=>'<button class="mm'+(active?' active':'')+'" onclick="'+onclick+'"><span class="mi">'+ic+'</span><span>'+label+'</span></button>';
   // fixed, symmetric 2 + [scan] + 2 layout so the camera is ALWAYS dead-centre (Instagram style)
   const canScan=(me&&me.tabs&&(me.tabs.includes('stock')));
-  const left=[cell('🏠','Home',"setTab('home')",cur==='home')];
-  if(hasTab('stock')||me.role==='admin')left.push(cell('📦','Stock',"setModule('inventory');setTab('stock')",cur==='stock'));
-  else left.push(cell('📦','Items',"setModule('inventory');setTab('stock')",cur==='stock'));
+  const left=[cell(ICO('house',22),'Home',"setTab('home')",cur==='home')];
+  if(hasTab('stock')||me.role==='admin')left.push(cell(ICO('package',22),'Stock',"setModule('inventory');setTab('stock')",cur==='stock'));
+  else left.push(cell(ICO('package',22),'Items',"setModule('inventory');setTab('stock')",cur==='stock'));
   const right=[];
-  if(hasTab('challans'))right.push(cell('📄','Dispatch',"setModule('gatepass');setTab('challans')",cur==='challans'||cur==='visitors'||cur==='gate'));
-  else if(hasTab('visitors'))right.push(cell('🛂','Gate',"setModule('gatepass');setTab('visitors')",cur==='visitors'));
-  else if(hasTab('billing'))right.push(cell('🧾','Billing',"setModule('billing');setTab('billing')",cur==='billing'));
-  else if(hasTab('dashboard')||me.role==='admin')right.push(cell('📊','Board',"setTab('dashboard')",cur==='dashboard'));
-  right.push(cell('☰','More',"toggleSidebar(true)",false));
-  const scanBtn=canScan?'<button class="mmscan" onclick="setModule(\'inventory\');setTab(\'stock\');openCart()" aria-label="Scan"><span>📷</span></button>':'';
+  if(hasTab('challans'))right.push(cell(ICO('file',22),'Dispatch',"setModule('gatepass');setTab('challans')",cur==='challans'||cur==='visitors'||cur==='gate'));
+  else if(hasTab('visitors'))right.push(cell(ICO('idcard',22),'Gate',"setModule('gatepass');setTab('visitors')",cur==='visitors'));
+  else if(hasTab('billing'))right.push(cell(ICO('receipt',22),'Billing',"setModule('billing');setTab('billing')",cur==='billing'));
+  else if(hasTab('dashboard')||me.role==='admin')right.push(cell(ICO('dashboard',22),'Board',"setTab('dashboard')",cur==='dashboard'));
+  right.push(cell(ICO('menu',22),'More',"toggleSidebar(true)",false));
+  const scanBtn=canScan?'<button class="mmscan" onclick="setModule(\'inventory\');setTab(\'stock\');openCart()" aria-label="Scan"><span>'+ICO('scan',26)+'</span></button>':'';
   mob.className='mobmods noprint'+(canScan?' has-scan':'');
   mob.innerHTML=left.join('')+scanBtn+right.join('');
   mob.style.display='';}}
 function toggleSidebar(force){const sb=document.getElementById('sidebar'),ov=document.getElementById('sbOverlay');if(!sb)return;const open=(force===undefined)?!sb.classList.contains('open'):force;sb.classList.toggle('open',open);if(ov)ov.classList.toggle('show',open);}
-function refreshTabVisibility(){const mod=MODULES.find(m=>m[0]===currentModule)||MODULES[0];document.querySelectorAll('#tabbar .tab').forEach(t=>{const id=t.dataset.tab;const allowed=(id==='admin'?me.role==='admin':hasTab(id))&&mod[2].includes(id);t.style.display=allowed?'':'none';});}
+function refreshTabVisibility(){const mod=MODULES.find(m=>m[0]===currentModule)||MODULES[0];document.querySelectorAll('#tabbar .tab').forEach(t=>{const id=t.dataset.tab;const allowed=(id==='admin'?me.role==='admin':hasTab(id))&&mod[2].includes(id);t.style.display=allowed?'':'none';});buildSubTabs();}
+/* Mirrors the visible sidebar tabs into the phone-only sticky strip. It reads
+   the same #tabbar nodes rather than re-deriving them, so labels and
+   permissions can never drift out of sync with the drawer. */
+var __lastSubTab=null;
+function buildSubTabs(){
+  var strip=document.getElementById('subtabs');if(!strip)return;
+  var cur=window.__curTab;
+  var items=Array.prototype.filter.call(document.querySelectorAll('#tabbar .tab'),function(t){
+    return t.dataset.tab && t.style.display!=='none';
+  });
+  if(items.length<2){strip.hidden=true;strip.innerHTML='';return;}
+  strip.hidden=false;
+  strip.innerHTML=items.map(function(t){
+    var id=t.dataset.tab;
+    return '<button type="button" class="st'+(id===cur?' active':'')+'" data-st="'+id+'"'+
+           (id===cur?' aria-current="page"':'')+'><span class="stl"></span></button>';
+  }).join('');
+  Array.prototype.forEach.call(strip.children,function(btn,i){
+    // strip the leading emoji/glyph so the chip reads as a clean label
+    var raw=(items[i].textContent||'').trim();
+    btn.querySelector('.stl').textContent=raw.replace(/^[^\p{L}\p{N}]+/u,'').trim()||raw;
+    btn.onclick=function(){setTab(btn.dataset.st);};
+  });
+  if(cur!==__lastSubTab){
+    __lastSubTab=cur;
+    var act=strip.querySelector('.st.active');
+    if(act&&act.scrollIntoView){try{act.scrollIntoView({block:'nearest',inline:'center',behavior:'smooth'});}catch(e){}}
+  }
+}
+/* .top wraps to two rows on narrow screens, so the sticky offset for the
+   sub-tab strip has to be measured rather than hard-coded. */
+function syncTopHeight(){
+  var t=document.querySelector('.top');if(!t)return;
+  document.documentElement.style.setProperty('--topH',Math.round(t.getBoundingClientRect().height)+'px');
+}
+window.addEventListener('resize',syncTopHeight);
+window.addEventListener('orientationchange',syncTopHeight);
+if(window.ResizeObserver){try{new ResizeObserver(syncTopHeight).observe(document.documentElement);}catch(e){}}
 function setModule(m){currentModule=m;const mod=MODULES.find(x=>x[0]===m);const ft=mod?mod[2].find(t=>t==='admin'?me.role==='admin':hasTab(t)):null;if(ft)setTab(ft);else{buildModuleBar();refreshTabVisibility();}}
 function applyPerms(){
   buildModuleBar();refreshTabVisibility();
@@ -2632,7 +2792,7 @@ function buildPOPDF(po){const {jsPDF}=window.jspdf;const doc=new jsPDF({unit:'mm
   let sy=Math.max(y,250);doc.setFont('helvetica','bold');doc.setFontSize(8);doc.setTextColor.apply(doc,INK);doc.text('For '+(co.name||'CESS Dynamics'),R,sy,{align:'right'});doc.setDrawColor(120,130,145);doc.line(R-52,sy+13,R,sy+13);doc.setFont('helvetica','normal');doc.setFontSize(7.5);doc.setTextColor.apply(doc,SLATE);doc.text('Authorised Signatory',R,sy+17,{align:'right'});
   doc.setDrawColor.apply(doc,LINE);doc.line(L,287,R,287);doc.setFontSize(6.8);doc.setTextColor.apply(doc,FAINT);doc.text('Computer-generated purchase order · '+po.no,L,291);doc.text((co.name||'')+(co.web?('  ·  '+co.web):''),W/2,294.5,{align:'center'});
   return doc;}
-function updateSectionHeader(t){const sh=document.getElementById('sechd');if(!sh)return;const ICONS={home:'🏠',dashboard:'📊',stock:'📦',ledger:'📒',challans:'📄',visitors:'🛂',gate:'🚦',reorder:'↻',bom:'🧩',inward:'📥',po:'📋',locations:'📍',transfer:'🔁',usage:'📈',billing:'🧾',suppliers:'🏭',stocktake:'✅',qr:'⌗',data:'🔄',admin:'⚙️',pricehist:'💰',audit:'📜'};const tab=ALL_TABS.find(x=>x[0]===t);const mod=MODULES.find(m=>m[2].includes(t));document.getElementById('sechdIc').innerHTML=ICONS[t]||'📄';document.getElementById('sechdTitle').textContent=t==='home'?'Home':(tab?tab[1]:t);document.getElementById('sechdCrumb').textContent=mod?mod[1].split(' ').slice(1).join(' '):'';}
+function updateSectionHeader(t){const sh=document.getElementById('sechd');if(!sh)return;/* section icons now come from the shared ICO() set */const tab=ALL_TABS.find(x=>x[0]===t);const mod=MODULES.find(m=>m[2].includes(t));document.getElementById('sechdIc').innerHTML=ICO(t,22);document.getElementById('sechdTitle').textContent=t==='home'?'Home':(tab?tab[1]:t);document.getElementById('sechdCrumb').textContent=mod?mod[1]:'';}
 function setTab(t){window.__curTab=t;try{hideAllCombos();}catch(e){CESSLOG.cap(e);}if(t!=='home'&&t!=='stock'&&t!=='admin'&&!hasTab(t)){return;}if(t==='admin'&&me.role!=='admin')return;const curMod=MODULES.find(m=>m[0]===currentModule);if(!curMod||!curMod[2].includes(t))currentModule=moduleOf(t);buildModuleBar();refreshTabVisibility();if(window.innerWidth<=900){try{toggleSidebar(false);}catch(e){CESSLOG.cap(e);}}document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===t));['home','dashboard','stock','ledger','challans','visitors','gate','reorder','bom','inward','po','locations','transfer','assets','usage','crmproj','valuation','billing','suppliers','stocktake','qr','data','admin','pricehist','audit'].forEach(x=>{const el=document.getElementById('tab-'+x);if(el)el.style.display=x===t?'':'none';});updateSectionHeader(t);const shown=document.getElementById('tab-'+t);if(shown){shown.classList.remove('panelin');void shown.offsetWidth;shown.classList.add('panelin');}document.getElementById('scanbar').style.display=(t==='stock')?'':'none';if(t==='home')renderHome();if(t==='dashboard')renderDashboard();if(t==='po')renderPOs();if(t==='locations')renderLocations();if(t==='ledger')renderLedger();if(t==='challans')renderChallans();if(t==='visitors')renderVisitors();if(t==='gate')renderGate();if(t==='reorder')renderReorder();if(t==='usage')renderUsage();if(t==='crmproj')refreshCrmProjects();if(t==='valuation')renderValuation();if(t==='assets')renderAssets();if(t==='billing'){buildBillProj();renderBilling();renderInvoices();}if(t==='suppliers')renderSuppliers();if(t==='pricehist'){refreshProjList();renderPhResults();}if(t==='stocktake')renderStocktake();if(t==='qr')renderQRSheet();if(t==='bom'){buildBomSel();renderBomDetail();}if(t==='transfer')buildTransfer();if(t==='inward')renderGrnDocs();if(t==='admin')renderAdmin();if(t==='audit')renderAudit();}
 function renderHome(){
   const hi=document.getElementById('homeHi');if(hi)hi.textContent=(new Date().getHours()<12?'Good morning':'Hello')+', '+(me.name||'').split(' ')[0];
@@ -2642,19 +2802,19 @@ function renderHome(){
   const chip=(txt,warn,tab)=>'<button onclick="setTab(\''+tab+'\')" style="border:1px solid '+(warn?'var(--warn)':'var(--line)')+';background:'+(warn?'var(--warn-bg)':'var(--card)')+';color:'+(warn?'var(--warn)':'var(--slate)')+';border-radius:20px;padding:7px 14px;font-size:12.5px;font-weight:600">'+txt+'</button>';
   if(chips)chips.innerHTML=(low?chip('⚠ '+low+' low stock','warn','reorder'):'')+(openCh?chip(openCh+' challan(s) pending gate', '', 'gate'):'');
   const T=[
-    ['📷','Scan','openCart()','stock'],
-    ['📦','Stock',"setTab('stock')",'stock'],
-    ['🛒','Cart / Checkout','openCartReview()','stock'],
-    ['📄','Challans',"setTab('challans')",'challans'],
-    ['🛂','Gate Pass',"setTab('visitors')",'visitors'],
-    ['🚦','Gate Approve',"setTab('gate')",'gate'],
-    ['📥','Goods-in',"setTab('inward')",'inward'],
-    ['↻','Reorder',"setTab('reorder')",'reorder'],
-    ['🧾','Billing',"setTab('billing')",'billing'],
-    ['📊','Dashboard',"setTab('dashboard')",'dashboard'],['📋','TaskFlow',"openTaskFlow()",'bom']
+    [ICO('scan',28),'Scan','openCart()','stock'],
+    [ICO('package',28),'Stock',"setTab('stock')",'stock'],
+    [ICO('cart',28),'Cart / Checkout','openCartReview()','stock'],
+    [ICO('receipt',28),'Challans',"setTab('challans')",'challans'],
+    [ICO('idcard',28),'Gate Pass',"setTab('visitors')",'visitors'],
+    [ICO('shieldcheck',28),'Gate Approve',"setTab('gate')",'gate'],
+    [ICO('boxplus',28),'Goods-in',"setTab('inward')",'inward'],
+    [ICO('refresh',28),'Reorder',"setTab('reorder')",'reorder'],
+    [ICO('receipt',28),'Billing',"setTab('billing')",'billing'],
+    [ICO('dashboard',28),'Dashboard',"setTab('dashboard')",'dashboard'],[ICO('clipboard',28),'TaskFlow',"openTaskFlow()",'bom']
   ].filter(t=>hasTab(t[3])||(t[3]==='dashboard'&&me.role==='admin'));
   const grid=document.getElementById('homeGrid');
-  if(grid)grid.innerHTML=T.slice(0,9).map(t=>'<button class="hometile" onclick="'+t[2]+'"><span class="hi">'+t[0]+'</span><span>'+t[1]+'</span></button>').join('')+'<button class="hometile more" onclick="toggleSidebar(true)"><span class="hi">☰</span><span>All screens</span></button>';
+  if(grid)grid.innerHTML=T.slice(0,9).map(t=>'<button class="hometile" onclick="'+t[2]+'"><span class="hi">'+t[0]+'</span><span>'+t[1]+'</span></button>').join('')+'<button class="hometile more" onclick="toggleSidebar(true)"><span class="hi">'+ICO('menu',28)+'</span><span>All screens</span></button>';
 }
 function renderAll(){refreshKPIs();const vis=id=>{const e=document.getElementById(id);return e&&e.style.display!=='none';};if(vis('tab-dashboard'))renderDashboard();if(vis('tab-stock'))render();if(vis('tab-ledger'))renderLedger();if(vis('tab-reorder'))renderReorder();if(vis('tab-usage'))renderUsage();if(vis('tab-crmproj'))renderCrmProjects();if(vis('tab-valuation'))renderValuation();if(vis('tab-assets'))renderAssets();if(vis('tab-suppliers'))renderSuppliers();if(vis('tab-stocktake'))renderStocktake();if(vis('tab-challans'))renderChallans();if(vis('tab-visitors'))renderVisitors();if(vis('tab-gate'))renderGate();if(vis('tab-inward'))renderGrnDocs();if(vis('tab-po'))renderPOs();if(vis('tab-locations'))renderLocations();if(vis('tab-billing')){buildBillProj();renderBilling();renderInvoices();}if(vis('tab-audit'))renderAudit();updateCartCount();}
 let _searchTimer=null;function debouncedRender(){clearTimeout(_searchTimer);_searchTimer=setTimeout(render,150);}
