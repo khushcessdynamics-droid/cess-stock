@@ -3,6 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- The UI is designed light. Without this, Chrome on Android applies
+     auto-dark-mode and force-inverts the cards to grey. -->
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#2A2F86">
 <title>CESS Stock · Inventory Control</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1366,6 +1370,46 @@ td{padding:var(--tbl-py) var(--tbl-px)}
   #app input[type=checkbox],#app input[type=radio]{width:22px;height:22px}
   #guest input,#guest select,#guest .abtn{min-height:48px}
 }
+
+/* ── Force the light scheme ──────────────────────────────────────────
+   Your Android screenshot showed the white auth card rendered dark
+   grey: Chrome's auto-dark-mode force-inverts pages that do not
+   declare a scheme. This app is designed light, so declare it and
+   Chrome stops rewriting the colours.                               */
+:root{color-scheme:light}
+html,body{color-scheme:light;background:var(--bg)}
+#landing,#guest{color-scheme:light}
+
+/* ══ LANDING SCENE ═══════════════════════════════════════════════════
+   The composition had a large dead zone upper-right and nothing tying
+   the left panel to the right robot cell. A control cabinet fills the
+   first and a conveyor floor joins the second, so the page reads as
+   one workcell rather than three loose stickers.                     */
+.roboBg .plc{position:absolute;--cw:clamp(96px,11vw,150px);width:var(--cw);
+  right:calc(7vw);top:calc(9vh);opacity:.34}
+.roboBg .convey{position:absolute;--vw2:clamp(320px,46vw,620px);width:var(--vw2);
+  left:calc(50% - var(--vw2)*.5);bottom:calc(14px);opacity:.26}
+@keyframes beltRun{to{stroke-dashoffset:-52}}
+.roboBg .belt{animation:beltRun 2.4s linear infinite}
+@keyframes toteRun{0%{transform:translateX(10px);opacity:0}
+  6%{opacity:1}92%{opacity:1}100%{transform:translateX(520px);opacity:0}}
+.roboBg .tote{animation:toteRun 11s linear infinite}
+.roboBg .tote.t2{animation-duration:13.5s;animation-delay:-4.5s}
+.roboBg .tote.t3{animation-duration:15s;animation-delay:-9s}
+@keyframes ledBlink{0%,100%{opacity:.25}45%{opacity:1}}
+.roboBg .pled{animation:ledBlink 2.6s ease-in-out infinite}
+.roboBg .pled.b{animation-delay:.5s}.roboBg .pled.c{animation-delay:1.1s}
+@keyframes waveShift{0%{transform:translateX(0)}100%{transform:translateX(-18px)}}
+.roboBg .wave{animation:waveShift 2.2s linear infinite}
+
+/* crowded on a phone: keep only the robot cell there */
+@media(max-width:900px){ .roboBg .plc{display:none} .roboBg .convey{opacity:.18;bottom:8px} }
+@media(max-width:600px){ .roboBg .convey{display:none} }
+@media(max-height:620px){ .roboBg .plc,.roboBg .convey{display:none} }
+@media(prefers-reduced-motion:reduce){
+  .roboBg .belt,.roboBg .tote,.roboBg .pled,.roboBg .wave{animation:none}
+  .roboBg .tote{opacity:1}
+}
 </style>
 </head>
 <body>
@@ -1438,6 +1482,41 @@ td{padding:var(--tbl-py) var(--tbl-px)}
         <path d="M384 378h15M405 378h15" stroke="#CFC6B6" stroke-width="3.4"/>
       </g>
     </svg>
+
+      <!-- ══ control cabinet: fills the empty upper right, and its LEDs
+           give the scene a heartbeat without competing with the card ══ -->
+      <svg class="plc" viewBox="0 0 160 210" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="12" y="10" width="136" height="176" rx="10" stroke="#CFC6B6" stroke-width="3"/>
+        <path d="M12 44h136" stroke="#CFC6B6" stroke-width="2.4"/>
+        <rect x="26" y="20" width="52" height="14" rx="4" stroke="#F0A65A" stroke-width="2.4"/>
+        <circle class="pled" cx="122" cy="27" r="4.5" fill="#7FB88F"/>
+        <circle class="pled b" cx="106" cy="27" r="4.5" fill="#F0A65A"/>
+        <rect x="26" y="58" width="108" height="42" rx="5" stroke="#F0A65A" stroke-width="2.4"/>
+        <path class="wave" d="M32 88c8-14 14 6 22-8s14 10 22-6 14 8 22-4 14 6 22-2" stroke="#F0A65A" stroke-width="2" opacity=".9"/>
+        <g stroke="#CFC6B6" stroke-width="2.2">
+          <rect x="26" y="114" width="24" height="30" rx="4"/><rect x="58" y="114" width="24" height="30" rx="4"/>
+          <rect x="90" y="114" width="24" height="30" rx="4"/>
+        </g>
+        <circle class="pled c" cx="38" cy="124" r="3" fill="#F0A65A"/>
+        <circle class="pled" cx="70" cy="124" r="3" fill="#7FB88F"/>
+        <circle class="pled b" cx="102" cy="124" r="3" fill="#F0A65A"/>
+        <path d="M26 160h108M26 172h72" stroke="#CFC6B6" stroke-width="2.2"/>
+        <path d="M40 186v14M120 186v14" stroke="#CFC6B6" stroke-width="2.6"/>
+      </svg>
+
+      <!-- ══ conveyor: ties the cabinet, cell and panel into one floor.
+           Totes travel it on a loop; the belt dashes travel with them ══ -->
+      <svg class="convey" viewBox="0 0 560 90" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M14 62h532" stroke="#CFC6B6" stroke-width="3"/>
+        <path class="belt" d="M14 62h532" stroke="#F0A65A" stroke-width="3" stroke-dasharray="14 12" opacity=".75"/>
+        <g stroke="#CFC6B6" stroke-width="2.4">
+          <circle cx="42" cy="74" r="9"/><circle cx="172" cy="74" r="9"/>
+          <circle cx="302" cy="74" r="9"/><circle cx="432" cy="74" r="9"/><circle cx="518" cy="74" r="9"/>
+        </g>
+        <g class="tote"><rect x="0" y="30" width="30" height="28" rx="4" stroke="#F0A65A" stroke-width="2.8"/><path d="M0 42h30" stroke="#F0A65A" stroke-width="1.8" opacity=".7"/></g>
+        <g class="tote t2"><rect x="0" y="34" width="24" height="24" rx="4" stroke="#F0A65A" stroke-width="2.6"/><path d="M0 44h24" stroke="#F0A65A" stroke-width="1.6" opacity=".7"/></g>
+        <g class="tote t3"><rect x="0" y="28" width="34" height="30" rx="4" stroke="#F0A65A" stroke-width="2.8"/><path d="M0 41h34" stroke="#F0A65A" stroke-width="1.8" opacity=".7"/></g>
+      </svg>
     <svg class="arm2" viewBox="0 0 200 200" fill="none" stroke="#C9C0AF" stroke-width="3" stroke-linecap="round">
       <circle class="forearm" cx="72" cy="72" r="30" style="transform-origin:72px 72px"/>
       <circle cx="72" cy="72" r="10" fill="#F0A65A" stroke="none"/>
@@ -2542,7 +2621,7 @@ async function approveChallan(no){if(!can('gateApprove')){toast('No permission t
   c.gateStatus='approved';c.approvedBy=me.name;c.approvedTs=Date.now();await saveChallan(c);renderAll();renderGate();toast('Approved · '+no,false,'good');logAudit('approve','challan',no);}
 async function rejectChallan(no){if(!can('gateApprove')){toast('No permission to approve',true);return;}const c=DB.challans.find(x=>x.no===no);if(!c||c.gateStatus!=='pending')return;if(!await __ask('Reject gate pass '+no+'? Held stock is released back to inventory and nothing leaves.'))return;
   await releaseHolds(no);c.gateStatus='rejected';c.approvedBy=me.name;c.approvedTs=Date.now();await saveChallan(c);renderAll();renderGate();toast('Rejected · '+no,false);logAudit('reject','challan',no);}
-function openGateScan(){open('gateScanModal');gateScanner=__regScan(new Html5Qrcode('gateReader'),'gateReader');gateScanner.start({facingMode:'environment'},{fps:12,aspectRatio:1,qrbox:(w,h)=>{const s=Math.floor(Math.min(w,h)*0.7);return {width:s,height:s};}},onGateScan,()=>{}).catch(()=>{toast('Camera unavailable — type challan no instead',true);closeGateScan();});}
+function openGateScan(){open('gateScanModal');gateScanner=__regScan(new Html5Qrcode('gateReader'),'gateReader');gateScanner.start({facingMode:'environment'},{fps:12,aspectRatio:1,qrbox:(w,h)=>{const s=Math.floor(Math.min(w,h)*0.7);return {width:s,height:s};}},onGateScan,()=>{}).catch(function(e){CESSLOG.cap(e,'camera');toast(cameraProblem(e),true);closeGateScan();});}
 function closeGateScan(){if(gateScanner){gateScanner.stop().then(()=>gateScanner.clear()).catch(()=>{});gateScanner=null;}closeModal('gateScanModal');}
 function onGateScan(txt){closeGateScan();gateLookup((txt||'').trim());}
 async function gateLookup(v){v=(v||'').replace(/CHALLAN::/gi,'').replace(/GATEPASS::/gi,'').replace(/\s+/g,'').trim();if(!v){toast('Empty scan',true);return;}
@@ -2782,7 +2861,7 @@ function buildInvoicePDF(inv){const {jsPDF}=window.jspdf;const doc=new jsPDF({un
 
 
 function openCart(){if(!cartDir)cartDir='OUT';open('cartScanModal');startCartScanner();}
-function startCartScanner(){cartScanner=__regScan(new Html5Qrcode('cartReader'),'cartReader');cartScanner.start({facingMode:'environment'},{fps:12,aspectRatio:1,qrbox:(w,h)=>{const s=Math.floor(Math.min(w,h)*0.7);return {width:s,height:s};}},onCartScan,()=>{}).catch(()=>{toast('Camera unavailable — type SKU instead',true);closeCartScan();});}
+function startCartScanner(){cartScanner=__regScan(new Html5Qrcode('cartReader'),'cartReader');cartScanner.start({facingMode:'environment'},{fps:12,aspectRatio:1,qrbox:(w,h)=>{const s=Math.floor(Math.min(w,h)*0.7);return {width:s,height:s};}},onCartScan,()=>{}).catch((e)=>{CESSLOG.cap(e,'camera');toast(cameraProblem(e),true);closeCartScan();});}
 function pauseCartScanner(){try{if(cartScanner)cartScanner.pause(true);}catch(e){CESSLOG.cap(e);}}
 function resumeCartScan(){try{if(cartScanner)cartScanner.resume();}catch(e){CESSLOG.cap(e);}}
 function closeCartScan(){if(cartScanner){cartScanner.stop().then(()=>cartScanner.clear()).catch(()=>{});cartScanner=null;}closeModal('cartScanModal');}
@@ -3440,7 +3519,7 @@ function poAddLine(){poDraft.push({sku:'',qty:1,rate:0});renderPOLines();}
 function poDelLine(i){poDraft.splice(i,1);if(!poDraft.length)poDraft.push({sku:'',qty:1,rate:0});renderPOLines();}
 function poSet(i,f,v){if(f==='qty')poDraft[i].qty=Math.max(1,parseInt(v)||1);else if(f==='rate')poDraft[i].rate=parseFloat(v)||0;else{poDraft[i].sku=v;const p=partBySku(v);if(p&&!poDraft[i].rate)poDraft[i].rate=p.cost||0;}renderPOLines();}
 function renderPOLines(){const box=document.getElementById('poLines');const opts=[...DB.parts].sort((a,b)=>available(a.sku)-available(b.sku)).map(p=>{const av=available(p.sku);const flag=av<=0?' ⚠ OUT':av<=p.min?' ⚠ LOW':'';return '<option value="'+esc(p.sku)+'">'+esc(p.name)+' — '+av+' in stock'+flag+'</option>';}).join('');box.innerHTML=poDraft.map((l,i)=>'<div style="display:flex;gap:6px;align-items:center;margin-bottom:7px"><input list="poPartList" value="'+esc(l.sku)+'" placeholder="Part / SKU" oninput="poSet('+i+',\'sku\',this.value)" style="flex:2;min-width:0;border:1px solid var(--line);border-radius:8px;padding:8px"><input type="number" value="'+l.qty+'" min="1" oninput="poSet('+i+',\'qty\',this.value)" style="width:58px;border:1px solid var(--line);border-radius:8px;padding:8px"><button class="rm" onclick="poDelLine('+i+')" style="color:var(--danger);font-size:18px">🗑</button></div>').join('')+'<datalist id="poPartList">'+opts+'</datalist>';}
-function poScanOpen(){open('poScanModal');poScanner=__regScan(new Html5Qrcode('poReader'),'poReader');poScanner.start({facingMode:'environment'},{fps:12,aspectRatio:1,qrbox:(w,h)=>{const s=Math.floor(Math.min(w,h)*0.7);return {width:s,height:s};}},onPoScan,()=>{}).catch(()=>{toast('Camera unavailable — type the SKU instead',true);closeModal('poScanModal');});}
+function poScanOpen(){open('poScanModal');poScanner=__regScan(new Html5Qrcode('poReader'),'poReader');poScanner.start({facingMode:'environment'},{fps:12,aspectRatio:1,qrbox:(w,h)=>{const s=Math.floor(Math.min(w,h)*0.7);return {width:s,height:s};}},onPoScan,()=>{}).catch(function(e){CESSLOG.cap(e,'camera');toast(cameraProblem(e),true);closeModal('poScanModal');});}
 function closePoScan(){if(poScanner){poScanner.stop().then(()=>poScanner.clear()).catch(()=>{});poScanner=null;}closeModal('poScanModal');}
 function onPoScan(txt){const sku=(txt||'').replace(/PART::/i,'').trim();const p=partBySku(sku)||DB.parts.find(x=>x.sku.toLowerCase()===sku.toLowerCase());if(!p){toast('Unknown code: '+sku,true);return;}haptic(15);const ex=poDraft.find(l=>l.sku===p.sku);if(ex)ex.qty++;else{const empty=poDraft.find(l=>!l.sku);if(empty){empty.sku=p.sku;empty.rate=p.cost||0;}else poDraft.push({sku:p.sku,qty:1,rate:p.cost||0});}renderPOLines();flashAdded();}
 async function savePO(){if(!can('purchase')){toast('No permission',true);return;}const sup=document.getElementById('poSup').value.trim();const lines=poDraft.filter(l=>l.sku&&l.qty>0).map(l=>{const p=partBySku(l.sku);return {sku:l.sku,name:p?p.name:l.sku,unit:(p&&p.unit)||'pcs',qty:l.qty,rate:l.rate};});if(!lines.length){toast('Add at least one item',true);return;}const total=lines.reduce((a,l)=>a+l.qty*l.rate,0);const po={no:await genPONo(),ts:Date.now(),sup,expDate:document.getElementById('poDate').value,notes:document.getElementById('poNotes').value.trim(),lines,total,status:'open',by:me.name};
@@ -4167,6 +4246,41 @@ document.addEventListener('DOMContentLoaded', function(){
     new MutationObserver(schedule).observe(document.documentElement,{childList:true,subtree:true});
   }catch(e){}
 })();
+
+
+/* ── Camera diagnostics ───────────────────────────────────────────────
+   getUserMedia only works in a SECURE CONTEXT. Opening the downloaded
+   file straight from Downloads gives a content:// or file:// URL, which
+   is not secure, so the browser blocks the camera outright and there is
+   nothing the page can do about it. The old handler said only "Camera
+   unavailable", which sent people hunting for a bug that isn't in the
+   code. Say what is actually wrong and what to do.                    */
+window.cameraProblem=function(err){
+  try{
+    if(!window.isSecureContext && location.protocol!=='https:' && location.hostname!=='localhost'){
+      return 'Camera needs a secure page. You have opened this file directly ('+
+             (location.protocol||'file:')+') — open the app from its https:// address instead.';
+    }
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
+      return 'This browser will not share a camera with the page.';
+    }
+    var n=err&&(err.name||err.message)||'';
+    if(/NotAllowed|Permission/i.test(n))
+      return 'Camera permission is blocked. Allow it in the padlock menu, then retry.';
+    if(/NotFound|Devices/i.test(n))   return 'No camera found on this device.';
+    if(/NotReadable|TrackStart/i.test(n))
+      return 'The camera is already in use by another app. Close it and retry.';
+    if(/Overconstrained/i.test(n))    return 'No rear camera available; try the front camera.';
+    if(!window.Html5Qrcode)           return 'The scanner library did not load. Check vendor/html5-qrcode.min.js is next to this file.';
+    return 'Camera unavailable'+(n?(' ('+n+')'):'')+' — type the code instead.';
+  }catch(e){ return 'Camera unavailable — type the code instead.'; }
+};
+/* surface it up front too, so the reason is visible before tapping scan */
+window.cameraBlockedReason=function(){
+  if(!window.isSecureContext && location.protocol!=='https:' && location.hostname!=='localhost')
+    return 'Scanning needs https — this page was opened as a local file.';
+  return null;
+};
 
 </script>
 </body>
