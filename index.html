@@ -628,7 +628,7 @@ window.addEventListener('unhandledrejection', function(ev){
   .combo-item:last-child{border-bottom:none}
   .combo-item:hover,.combo-item.active{background:var(--blue-soft)}
 </style>
-<script>try{var __q=new URLSearchParams(location.search);if(__q.get('guest')==='visitor'||location.hash==='#guest')document.documentElement.setAttribute('data-guest','1');}catch(e){CESSLOG.cap(e);}</script>
+<script>try{var __q=new URLSearchParams(location.search);if(__q.get('guest')==='visitor'||location.hash==='#guest')document.documentElement.setAttribute('data-guest','1');document.documentElement.setAttribute('data-screen','entry');}catch(e){CESSLOG.cap(e);}</script>
 <style>html[data-guest="1"] #landing{display:none!important}html[data-guest="1"] #guest{display:block!important}</style>
 <style id="cess-ios-fix">
 /* iOS: inputs must be >=16px or Safari force-zooms the page on focus */
@@ -1410,6 +1410,75 @@ html,body{color-scheme:light;background:var(--bg)}
   .roboBg .belt,.roboBg .tote,.roboBg .pled,.roboBg .wave{animation:none}
   .roboBg .tote{opacity:1}
 }
+
+/* ── Vertical overflow on the entry screens ──────────────────────────
+   Reported: scrolling past the sign-in / gate-pass screen revealed a
+   band of light dotted page background below it.
+   Cause: body carries height:100%, which resolves against the LARGE
+   viewport (URL bar hidden), while the entry surfaces are sized in
+   dvh — the CURRENT viewport. Whenever the URL bar is showing, body is
+   taller than the surface and its light background shows through.
+   Fix on both sides: stop the scroll chaining, and paint body to match
+   whichever surface is up so nothing can peek through regardless.   */
+html,body{overscroll-behavior-y:none}
+html[data-screen="entry"],html[data-screen="entry"] body{background:#1E2370;background-image:none}
+html[data-guest="1"],html[data-guest="1"] body{background:#14295b;background-image:none}
+html[data-screen="app"] body{background:var(--bg)}
+/* and make the surfaces themselves fill whichever viewport is larger */
+#landing{min-height:100dvh}
+#guest{min-height:100dvh}
+@supports not (min-height:100dvh){ #landing,#guest{min-height:100vh} }
+
+/* ══ NAVIGATION FRAMEWORK ════════════════════════════════════════════
+   One nav language everywhere. The mobile sub-tabs were already pills
+   while the sidebar used square blocks with an orange edge marker and
+   the module row used yet another shape — three vocabularies for the
+   same job. Everything is a pill now; the active state is a filled
+   pill rather than a marker bar, so it reads the same on every screen. */
+.tab{border-radius:var(--r-pill);padding:10px 14px;margin:1px 0;
+     border:1px solid transparent;transition:background .18s var(--ease),color .18s,border-color .18s}
+.tab.active{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.20);color:#fff}
+.tab.active::before{display:none}          /* the pill IS the indicator now */
+.tab:hover{background:rgba(255,255,255,.09)}
+.tab .ti{width:20px;display:inline-flex;justify-content:center}
+
+.modbtn{border-radius:var(--r-pill);border:1px solid transparent}
+.modbtn.active{border-color:rgba(255,255,255,.22)}
+.tabfind input{border-radius:var(--r-pill);padding-left:15px}
+
+/* the drawer's own scroll should not drag the page behind it */
+.sidebar{overscroll-behavior:contain}
+
+/* ══ SURFACE FRAMEWORK ═══════════════════════════════════════════════
+   Every content surface — panel, part card, challan card, KPI, empty
+   state, home tile — is the same object: card radius, hairline border,
+   elevation 1, and it lifts on hover only where it is clickable.     */
+.panel,.part,.challan-card,.kpi,.empty,.hometile,.dashcard{
+  border-radius:var(--card-r,14px);
+  border:1px solid var(--line);
+  background:var(--card);
+  box-shadow:var(--elev-1);
+}
+.part,.challan-card,.hometile{transition:transform .16s var(--ease),box-shadow .18s var(--ease),border-color .18s}
+@media(hover:hover){
+  .part:hover,.challan-card:hover,.hometile:hover{
+    transform:translateY(-2px);box-shadow:var(--elev-3);border-color:var(--line-strong)}
+}
+.part:active,.challan-card:active,.hometile:active{transform:translateY(0) scale(.995)}
+
+/* tables live inside the same shell instead of floating on the page */
+.panel table{border-radius:0}
+.panel>table:first-child{border-top-left-radius:var(--card-r,14px);border-top-right-radius:var(--card-r,14px)}
+th{background:var(--blue-soft);color:var(--ink);font-weight:700;
+   text-transform:uppercase;letter-spacing:.06em;position:sticky;top:0;z-index:1}
+tbody tr{transition:background .14s}
+@media(hover:hover){ tbody tr:hover{background:var(--blue-soft)} }
+
+/* one badge family: pills, chips and status tags share a shape */
+.pill,.chip,.statustag,.rbadge,.modetag,.synctag{border-radius:var(--r-pill)}
+
+/* numerals are data: one treatment across every surface */
+.kpi .n,.part .qty,.dashkpi .v,td.num,.tnum{font-variant-numeric:tabular-nums}
 </style>
 </head>
 <body>
@@ -2079,7 +2148,7 @@ async function doLogout(){try{logAudit('logout','auth',me.username||'');}catch(e
 function enterLocal(){CLOUD=false;me={name:'Admin (local)',role:'admin',email:'',tabs:PRESETS.admin.tabs,powers:PRESETS.admin.powers,active:true};loadLocal();enterApp();}
 
 function enterApp(){
-  document.getElementById('landing').style.display='none';document.getElementById('app').style.display='block';window.__startTab=(window.innerWidth<=900)?'home':'stock';
+  document.getElementById('landing').style.display='none';document.getElementById('app').style.display='block';document.documentElement.setAttribute('data-screen','app');window.__startTab=(window.innerWidth<=900)?'home':'stock';
   try{syncTopHeight();setTimeout(syncTopHeight,300);}catch(e){CESSLOG.cap(e);}
   document.getElementById('uNm').textContent=me.name;document.getElementById('uRl').textContent=me.role;document.getElementById('uAv').textContent=(me.name[0]||'U').toUpperCase();
   const st=document.getElementById('syncTag'),sl=document.getElementById('syncLbl');
