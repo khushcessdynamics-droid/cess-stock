@@ -1210,6 +1210,159 @@ td{padding:var(--tbl-py) var(--tbl-px)}
   outline:var(--focus-w) solid var(--focus-ring)!important;
   outline-offset:var(--focus-off)!important;
 }
+
+/* ── Guest gate-pass page ───────────────────────────────────────────
+   #guest was sized with min-height:100vh. On Android Chrome and iOS
+   Safari 100vh is the LARGE viewport — it counts the space behind the
+   collapsing URL bar — so the page ran taller than the screen and the
+   submit button sat underneath the browser chrome. dvh tracks the
+   visible height instead, and the safe-area pad clears the iPhone
+   home indicator.                                                   */
+#guest{min-height:100dvh;padding-bottom:env(safe-area-inset-bottom)!important}
+#guest>div{padding-bottom:calc(48px + env(safe-area-inset-bottom))}
+/* the pass form is the whole page here: give the controls room and
+   keep the primary action comfortably above the gesture area */
+@media(max-width:600px){
+  #guest>div{padding-left:14px;padding-right:14px}
+  #guest #guestLogo{height:84px!important;margin:6px auto 8px!important;padding:10px 18px!important}
+  #guest .abtn{min-height:50px}
+}
+@supports not (min-height:100dvh){ #guest{min-height:100vh} }
+
+/* ══ INFORMATION DENSITY ═════════════════════════════════════════════
+   Measured before: on a 390x844 phone the first part card began at
+   y=792 — 701px of chrome above it, so a floor user saw ZERO stock
+   without scrolling. On desktop only 3 of 9 cards fit. This is a
+   dense operational tool; data should be the first thing on screen. */
+
+/* --- Scan bar: the hint line is already hidden on phones, so the
+       block only needs to hold the action row + input. --- */
+#scanbar{padding:14px 16px}
+#scanbar .row+.row{margin-top:8px!important}
+@media(max-width:900px){
+  #scanbar{padding:10px 12px;border-radius:var(--r-lg)}
+  #scanbar .row+.row{margin-top:7px!important}
+}
+
+/* --- KPIs: four tiles stacked 2x2 ate 172px on a phone. One compact
+       row of four reads the same and costs ~68px. --- */
+@media(max-width:640px){
+  .kpis{grid-template-columns:repeat(4,1fr)!important;gap:6px;margin-bottom:12px}
+  .kpi{padding:9px 7px;border-radius:var(--r-md);text-align:center}
+  .kpi .n{font-size:19px;letter-spacing:-.02em}
+  .kpi .l{font-size:8.5px;margin-top:2px;letter-spacing:.05em;line-height:1.25}
+  .kpi .locked{font-size:12px}
+  .kpi .locked .ic-s{width:13px;height:13px}
+}
+@media(max-width:360px){ .kpi .n{font-size:17px} .kpi .l{font-size:8px} }
+
+/* --- Section header duplicates the sub-tab chip that is already
+       pinned directly above it on mobile. Drop it there. --- */
+@media(max-width:900px){ .sechd{display:none!important} }
+
+/* --- Toolbar: search + three selects stacked to 148px. Search keeps
+       its own row, the filters share one. --- */
+@media(max-width:900px){
+  .toolbar{gap:7px;margin-bottom:12px}
+  .toolbar input[type=search]{flex:1 0 100%;min-width:0}
+  .toolbar select{flex:1 1 0;min-width:0;padding:11px 8px;font-size:13px!important;
+                  text-overflow:ellipsis;box-shadow:none}
+  .toolbar .btn{flex:1 0 100%}
+}
+
+/* --- Low-stock banner is one line of text; it does not need 44px. --- */
+.lowbar{padding:9px 14px}
+
+/* --- Desktop: the scan hero was 223px tall, pushing the grid below
+       the fold on a 900px laptop. --- */
+@media(min-width:901px){
+  #scanbar{padding:16px 18px}
+  .sechd{margin-bottom:12px;padding-bottom:10px}
+  .kpis{margin-bottom:14px}
+}
+
+/* --- Scan row: .cartcount was stretching to fill the row, making a
+       52px action bar 106px tall for no information gain. --- */
+#scanbar .row{align-items:center}
+@media(min-width:901px){
+  #scanbar .row>.bigscan{min-height:52px}
+  #scanbar .row>.cartcount{align-self:center;min-height:52px;height:52px;padding:0 18px}
+}
+
+/* --- Toolbar: search shares row 1 with the primary action, filters
+       take row 2. Three rows becomes two. --- */
+@media(max-width:900px){
+  .toolbar input[type=search]{flex:1 1 auto!important;min-width:150px}
+  .toolbar>.btn{flex:0 0 auto!important;white-space:nowrap;padding-left:14px;padding-right:14px}
+}
+
+/* --- On a phone the top bar is two rows (117px) and was pinned, so it
+       cost that height on every screen forever. Let it scroll away and
+       pin only the sub-tab strip: after the first flick the user gets
+       the full screen for stock, and the bar is one scroll-up away.
+       Desktop keeps the bar pinned — there is room for it there. --- */
+@media(max-width:900px){
+  .top{position:relative!important;top:auto!important}
+  .subtabs{top:0!important}
+}
+
+/* ══ MOTION ══════════════════════════════════════════════════════════
+   One-shot, purposeful only. Anything that loops forever was removed
+   earlier; what is added here responds to something the user did.   */
+@keyframes cardIn{from{opacity:0;transform:translate3d(0,10px,0)}to{opacity:1;transform:none}}
+.part,.challan-card,.dashrow{animation:cardIn .34s var(--ease) both}
+.part:nth-child(1){animation-delay:.01s}.part:nth-child(2){animation-delay:.045s}
+.part:nth-child(3){animation-delay:.08s}.part:nth-child(4){animation-delay:.115s}
+.part:nth-child(5){animation-delay:.15s}.part:nth-child(6){animation-delay:.18s}
+.part:nth-child(n+7){animation-delay:.2s}
+.subtabs .st{transition:background .18s var(--ease),color .18s var(--ease),transform .12s var(--ease)}
+.subtabs .st:active{transform:scale(.95)}
+.stbtn{transition:transform .12s var(--ease),background .16s,border-color .16s}
+.stbtn:active{transform:scale(.94)}
+@media(prefers-reduced-motion:reduce){
+  .part,.challan-card,.dashrow{animation:none!important}
+}
+
+/* ══ EASTER EGGS ═════════════════════════════════════════════════════
+   A shop-floor vignette occasionally replaces the empty-state glyph:
+   a PLC rack running its scan, a CNC toolpath, a welding arc, or an
+   articulated arm cycling. One is chosen at random per empty state and
+   only sometimes — it should feel like a small find, not a feature. */
+.egg{display:block;margin:0 auto var(--sp-3);opacity:.85}
+.egg .dim{stroke:var(--line-strong)}
+.egg .hot{stroke:var(--orange)}
+@keyframes plcScan{0%,100%{opacity:.22}45%{opacity:1}}
+@keyframes plcRun{0%,100%{opacity:.3}50%{opacity:1}}
+.egg .led{animation:plcScan 1.9s ease-in-out infinite}
+.egg .led:nth-of-type(2){animation-delay:.22s}
+.egg .led:nth-of-type(3){animation-delay:.44s}
+.egg .led:nth-of-type(4){animation-delay:.66s}
+.egg .runled{animation:plcRun 1.4s ease-in-out infinite}
+@keyframes cutPath{to{stroke-dashoffset:-56}}
+.egg .toolpath{stroke-dasharray:5 5;animation:cutPath 2.6s linear infinite}
+@keyframes bitMove{0%,100%{transform:translateX(0)}50%{transform:translateX(26px)}}
+.egg .bit{animation:bitMove 2.6s ease-in-out infinite}
+@keyframes arcFlash{0%,72%,100%{opacity:0}76%,88%{opacity:1}}
+@keyframes sparkFly{0%{opacity:0;transform:translate(0,0)}20%{opacity:1}100%{opacity:0;transform:translate(13px,11px)}}
+.egg .arc{animation:arcFlash 2.4s ease-in-out infinite}
+.egg .spark{animation:sparkFly 2.4s ease-out infinite}
+.egg .spark:nth-of-type(2){animation-delay:.1s}
+.egg .spark:nth-of-type(3){animation-delay:.2s}
+@keyframes armSwing{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(9deg)}}
+@keyframes gripPinch{0%,100%{transform:translateY(0)}50%{transform:translateY(-2.5px)}}
+.egg .swing{transform-origin:42px 46px;animation:armSwing 3.2s ease-in-out infinite}
+.egg .grip{animation:gripPinch 1.6s ease-in-out infinite}
+@media(prefers-reduced-motion:reduce){ .egg *{animation:none!important} }
+
+/* --- Touch target floor keyed to the POINTER, not the width. An iPad
+       Pro is 1024px wide but still a finger: the width-capped rule at
+       900px left its controls at mouse size. --- */
+@media(pointer:coarse){
+  #app input:not([type=checkbox]):not([type=radio]):not([type=hidden]),
+  #app select,#app textarea,#app .btn,#app button:not(.close):not(.mm):not(.st){min-height:44px}
+  #app input[type=checkbox],#app input[type=radio]{width:22px;height:22px}
+  #guest input,#guest select,#guest .abtn{min-height:48px}
+}
 </style>
 </head>
 <body>
@@ -3925,6 +4078,73 @@ document.addEventListener('DOMContentLoaded', function(){
     if(live){ seeded=true; seed(); return; }
     if(++tries<400) setTimeout(waitForApp,150);   // ~60s ceiling
   })();
+})();
+
+
+/* ── Shop-floor easter eggs ───────────────────────────────────────────
+   Empty states are dead ends; this puts a small piece of the factory
+   there instead. Kept deliberately rare and quiet — a wink, not a
+   feature — and fully disabled under prefers-reduced-motion.        */
+(function(){
+  var EGGS=[
+    /* PLC rack mid-scan */
+    '<svg class="egg" width="72" height="56" viewBox="0 0 72 56" fill="none" stroke-width="2" stroke-linecap="round">'+
+      '<rect class="dim" x="6" y="8" width="60" height="40" rx="4"/>'+
+      '<path class="dim" d="M18 8v40"/>'+
+      '<circle class="runled hot" cx="12" cy="15" r="2" fill="currentColor" stroke="none" style="color:var(--ok)"/>'+
+      '<rect class="led hot" x="24" y="16" width="8" height="5" rx="1.5"/>'+
+      '<rect class="led hot" x="36" y="16" width="8" height="5" rx="1.5"/>'+
+      '<rect class="led hot" x="48" y="16" width="8" height="5" rx="1.5"/>'+
+      '<rect class="led dim" x="24" y="28" width="8" height="5" rx="1.5"/>'+
+      '<path class="dim" d="M24 40h32"/></svg>',
+    /* CNC toolpath */
+    '<svg class="egg" width="72" height="56" viewBox="0 0 72 56" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+
+      '<path class="dim" d="M8 46h56"/>'+
+      '<path class="toolpath hot" d="M14 38h18l8-12h18"/>'+
+      '<g class="bit"><path class="dim" d="M20 10v14"/><path class="hot" d="M16 24h8l-4 7z"/></g>'+
+      '<path class="dim" d="M8 46v4M64 46v4"/></svg>',
+    /* welding arc */
+    '<svg class="egg" width="72" height="56" viewBox="0 0 72 56" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+
+      '<path class="dim" d="M10 44h52"/>'+
+      '<path class="dim" d="M44 12 30 34"/>'+
+      '<path class="dim" d="M46 10l6-4"/>'+
+      '<path class="arc hot" d="M30 34l-3 6" stroke-width="3"/>'+
+      '<circle class="spark hot" cx="28" cy="38" r="1.6" fill="currentColor" stroke="none"/>'+
+      '<circle class="spark hot" cx="28" cy="38" r="1.2" fill="currentColor" stroke="none"/>'+
+      '<circle class="spark hot" cx="28" cy="38" r="1" fill="currentColor" stroke="none"/></svg>',
+    /* articulated arm placing a part */
+    '<svg class="egg" width="72" height="56" viewBox="0 0 72 56" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+
+      '<path class="dim" d="M30 50h24"/>'+
+      '<path class="dim" d="M42 50v-4"/>'+
+      '<g class="swing"><path class="hot" d="M42 46V26l14-8"/>'+
+        '<circle class="dim" cx="42" cy="26" r="3"/>'+
+        '<g class="grip"><path class="hot" d="M56 18v5M52 20l4 3 4-3"/></g></g>'+
+      '<rect class="dim" x="10" y="38" width="14" height="12" rx="2"/></svg>'
+  ];
+  function pick(){ return EGGS[Math.floor(Math.random()*EGGS.length)]; }
+
+  var reduce=false;
+  try{ reduce=matchMedia('(prefers-reduced-motion:reduce)').matches; }catch(e){}
+
+  function sprinkle(){
+    if(reduce) return;
+    var list=document.querySelectorAll('.empty .ico:not([data-egg])');
+    for(var i=0;i<list.length;i++){
+      var ico=list[i];
+      ico.setAttribute('data-egg','seen');          // decide once per element
+      if(Math.random()>0.28) continue;              // ~1 in 4 empty states
+      ico.innerHTML=pick();
+      ico.style.fontSize='0';                       // drop the glyph line-height
+    }
+  }
+  var t=null;
+  function schedule(){ clearTimeout(t); t=setTimeout(sprinkle,180); }
+  if(document.readyState!=='loading') schedule();
+  document.addEventListener('DOMContentLoaded',schedule);
+  /* empty states are rendered on demand, so watch for them */
+  try{
+    new MutationObserver(schedule).observe(document.documentElement,{childList:true,subtree:true});
+  }catch(e){}
 })();
 
 </script>
