@@ -1217,23 +1217,51 @@ td{padding:var(--tbl-py) var(--tbl-px)}
   <div class="roboBg" aria-hidden="true">
     <div class="rgrid"></div>
     <svg class="arm" viewBox="0 0 480 480" fill="none" stroke-linecap="round" stroke-linejoin="round">
-      <g class="trace" stroke="#F0A65A" stroke-width="1.4" opacity=".45" stroke-dasharray="4 6">
+      <!-- circuit traces feeding the cell -->
+      <g class="trace" stroke="#F0A65A" stroke-width="1.4" opacity=".4" stroke-dasharray="4 6">
         <path d="M24 70 H130 V150 H210"/><path d="M40 320 H150 V380 H240"/>
       </g>
       <circle cx="24" cy="70" r="3.5" fill="#F0A65A"/><circle cx="210" cy="150" r="3.5" fill="#F0A65A"/><circle cx="40" cy="320" r="3.5" fill="#F0A65A"/>
-      <!-- humanoid robot -->
-      <g stroke-width="3">
-        <rect x="300" y="150" width="96" height="34" rx="17" stroke="#C9C0AF"/>
-        <circle class="joint" cx="330" cy="167" r="6" fill="#F0A65A" stroke="none"/><circle class="joint b" cx="366" cy="167" r="6" fill="#F0A65A" stroke="none"/>
-        <path d="M348 150 V132" stroke="#C9C0AF"/><circle cx="348" cy="126" r="5" fill="#F0A65A" stroke="none"/>
-        <path d="M330 184 V214" stroke="#C9C0AF"/>
-        <rect x="308" y="214" width="80" height="96" rx="16" stroke="#F0A65A"/>
-        <rect x="326" y="236" width="44" height="30" rx="6" stroke="#C9C0AF"/>
-        <path d="M308 234 L280 280 L286 322 M388 234 L416 280 L410 322" stroke="#C9C0AF"/>
-        <circle class="joint c" cx="308" cy="234" r="7" fill="#17130D" stroke="#F0A65A"/><circle class="joint" cx="388" cy="234" r="7" fill="#17130D" stroke="#F0A65A"/>
-        <path d="M330 310 V400 M366 310 V400" stroke="#F0A65A"/>
-        <path d="M330 400 H314 M366 400 H382" stroke="#C9C0AF"/>
-        <circle class="joint b" cx="330" cy="310" r="6" fill="#F0A65A" stroke="none"/><circle class="joint c" cx="366" cy="310" r="6" fill="#F0A65A" stroke="none"/>
+
+      <!-- articulated humanoid: helmet visor, pauldrons, segmented limbs -->
+      <g stroke-width="3" stroke="#F0A65A">
+        <!-- head + visor -->
+        <path d="M322 146a26 26 0 0 1 52 0v18a16 16 0 0 1-16 16h-20a16 16 0 0 1-16-16z"/>
+        <path d="M330 150a18 18 0 0 1 36 0v9a7 7 0 0 1-7 7h-22a7 7 0 0 1-7-7z" stroke="#CFC6B6" stroke-width="2.2"/>
+        <circle class="joint" cx="341" cy="156" r="3.2" fill="#F0A65A" stroke="none"/>
+        <circle class="joint b" cx="355" cy="156" r="3.2" fill="#F0A65A" stroke="none"/>
+        <path d="M348 120v-10" stroke="#CFC6B6" stroke-width="2.2"/>
+        <circle class="joint c" cx="348" cy="106" r="4.5" fill="#F0A65A" stroke="none"/>
+        <!-- neck -->
+        <path d="M348 180v12" stroke="#CFC6B6" stroke-width="2.4"/>
+        <!-- shoulder yoke -->
+        <path d="M308 204a42 42 0 0 1 80 0" stroke="#CFC6B6" stroke-width="2.6"/>
+        <!-- torso, tapered to the waist -->
+        <path d="M312 206h72l-7 76a14 14 0 0 1-14 12h-30a14 14 0 0 1-14-12z"/>
+        <!-- chest core -->
+        <circle cx="348" cy="240" r="14" stroke="#CFC6B6" stroke-width="2.2"/>
+        <circle class="joint" cx="348" cy="240" r="6" fill="#F0A65A" stroke="none"/>
+        <path d="M330 268h36" stroke="#CFC6B6" stroke-width="2"/>
+        <!-- arms: left relaxed, right raised mid-gesture -->
+        <g class="forearm">
+          <path d="M310 210l-16 44 12 40" stroke="#CFC6B6" stroke-width="2.8"/>
+          <path d="M306 294l-4 14" stroke="#CFC6B6" stroke-width="2.4"/>
+        </g>
+        <path d="M386 210l18 34-10 34" stroke="#CFC6B6" stroke-width="2.8"/>
+        <path d="M394 278l6 12" stroke="#CFC6B6" stroke-width="2.4"/>
+        <circle class="joint b" cx="310" cy="210" r="6" fill="#1B2058" stroke="#F0A65A" stroke-width="2.4"/>
+        <circle class="joint" cx="386" cy="210" r="6" fill="#1B2058" stroke="#F0A65A" stroke-width="2.4"/>
+        <circle cx="294" cy="254" r="4" fill="#1B2058" stroke="#CFC6B6" stroke-width="2"/>
+        <circle cx="404" cy="244" r="4" fill="#1B2058" stroke="#CFC6B6" stroke-width="2"/>
+        <!-- pelvis -->
+        <path d="M330 296h36" stroke="#CFC6B6" stroke-width="2.6"/>
+        <!-- legs, knee-jointed -->
+        <path d="M334 300l-4 52 3 50"/>
+        <path d="M362 300l5 52-3 50"/>
+        <circle class="joint c" cx="330" cy="352" r="5" fill="#1B2058" stroke="#F0A65A" stroke-width="2.2"/>
+        <circle class="joint" cx="367" cy="352" r="5" fill="#1B2058" stroke="#F0A65A" stroke-width="2.2"/>
+        <!-- feet -->
+        <path d="M323 402h20M355 402h20" stroke="#CFC6B6" stroke-width="3.4"/>
       </g>
     </svg>
     <svg class="arm2" viewBox="0 0 200 200" fill="none" stroke="#C9C0AF" stroke-width="3" stroke-linecap="round">
@@ -3801,6 +3829,104 @@ document.addEventListener('DOMContentLoaded', function(){
     setTimeout(function(){ cessTableify(); cessAutoPage(); },250); });
   CESSLOG.info('── page load · '+innerWidth+'×'+innerHeight+' · '+(navigator.onLine?'online':'OFFLINE')+' ──');
 });
+
+/* ══ Browser history: back should return to the previous tab ══════════
+   The app is a website but behaved like a kiosk — every screen lived at
+   the same URL, so Chrome's back button exited the site instead of
+   stepping back a tab. This wraps the existing navigation rather than
+   editing it: setTab/toggleSidebar keep their behaviour and simply gain
+   a history entry. Overlays (modal, drawer) take priority on back, which
+   is what a phone user expects.
+   '#guest' is deliberately ignored — boot() owns that hash.            */
+(function(){
+  if(!window.history||!history.pushState) return;
+  var VALID=['home','dashboard','stock','ledger','challans','visitors','gate','reorder','bom',
+             'inward','po','locations','transfer','assets','usage','crmproj','valuation','billing',
+             'suppliers','stocktake','qr','data','admin','pricehist','audit'];
+  var quiet=false;                       // set while WE drive navigation
+  /* read the entry hash NOW: the app's own first setTab() runs before
+     seed() and would otherwise rewrite it to the default start tab. */
+  var entryHash=(location.hash||'').replace('#','');
+  function hush(fn){ quiet=true; try{fn();}finally{ setTimeout(function(){quiet=false;},0); } }
+
+  function openModal_(){
+    var list=document.querySelectorAll('.modal-bg');
+    for(var i=0;i<list.length;i++){
+      if(getComputedStyle(list[i]).display!=='none') return list[i];
+    }
+    return null;
+  }
+  function drawerOpen(){
+    var sb=document.getElementById('sidebar');
+    return !!(sb&&sb.classList.contains('open'));
+  }
+
+  /* ---- tab changes push a history entry ---- */
+  var _setTab=window.setTab;
+  window.setTab=function(t){
+    var r=_setTab.apply(this,arguments);
+    if(!quiet&&VALID.indexOf(t)>=0){
+      var st=history.state;
+      if(!st||st.cess!=='tab'||st.tab!==t) history.pushState({cess:'tab',tab:t},'','#'+t);
+    }
+    return r;
+  };
+
+  /* ---- opening the drawer pushes a dismissable entry ---- */
+  var _toggle=window.toggleSidebar;
+  if(typeof _toggle==='function'){
+    window.toggleSidebar=function(force){
+      var before=drawerOpen();
+      var r=_toggle.apply(this,arguments);
+      var after=drawerOpen();
+      if(!quiet&&!before&&after) history.pushState({cess:'ov',kind:'drawer'},'',location.hash);
+      else if(!quiet&&before&&!after&&history.state&&history.state.cess==='ov') hush(function(){history.back();});
+      return r;
+    };
+  }
+
+  /* ---- back ---- */
+  window.addEventListener('popstate',function(ev){
+    var st=ev.state||{};
+    var m=openModal_();
+    if(m){                                   // 1st back closes an open sheet
+      hush(function(){
+        if(typeof window.closeModal==='function'){ try{window.closeModal();}catch(e){ m.style.display='none'; } }
+        else m.style.display='none';
+      });
+      return;
+    }
+    if(drawerOpen()){                        // then the drawer
+      hush(function(){ try{window.toggleSidebar(false);}catch(e){} });
+      return;
+    }
+    if(st.cess==='tab'&&st.tab&&st.tab!==window.__curTab){
+      hush(function(){ _setTab(st.tab); });
+    }
+  });
+
+  /* ---- seed the first entry, and honour a #tab deep link ---- */
+  function seed(){
+    var deep=(VALID.indexOf(entryHash)>=0)?entryHash:null;
+    var start=deep||window.__curTab;
+    if(!start) return;
+    if(deep&&deep!==window.__curTab) hush(function(){ _setTab(deep); });
+    history.replaceState({cess:'tab',tab:start},'','#'+start);
+  }
+  /* The app only exists after sign-in (which may be instant from a saved
+     session, or minutes later), so wait for the first tab to be chosen
+     rather than for load — otherwise a #tab deep link is overwritten by
+     the default start tab. */
+  var tries=0, seeded=false;
+  (function waitForApp(){
+    if(seeded) return;
+    var app=document.getElementById('app');
+    var live=app&&getComputedStyle(app).display!=='none'&&window.__curTab;
+    if(live){ seeded=true; seed(); return; }
+    if(++tries<400) setTimeout(waitForApp,150);   // ~60s ceiling
+  })();
+})();
+
 </script>
 </body>
 </html>
