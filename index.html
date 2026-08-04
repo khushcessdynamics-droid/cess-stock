@@ -18,7 +18,7 @@ window.CESSLOG = (function(){
   /* entries logged as fatal before the scanner-stop rejection was known to be
      harmless — reclassify (not delete) so the badge reflects real failures */
   buf.forEach(function(r){
-    if(r && r.kind==='fatal' && /scanner is not running|Cannot stop, scaanner|Cannot pause, scanner|^Script error\.?$/i.test(String(r.msg||''))) r.kind='caught';
+    if(r && r.kind==='fatal' && /scanner is not running|Cannot stop, scanner|Cannot pause, scanner|^Script error\.?$/i.test(String(r.msg||''))) r.kind='caught';
   });
   function flush(){ if(!storageOK) return;
     try{ localStorage.setItem(K, JSON.stringify(buf.slice(-300))); }catch(e){ storageOK=false; } }
@@ -791,7 +791,7 @@ window.addEventListener('unhandledrejection', function(ev){
       <div class="tab" data-tab="admin" onclick="setTab('admin')">&#9881;&#65039; Admin Panel</div>
       <div class="tab" data-tab="pricehist" onclick="setTab('pricehist')">&#128176; Purchase Price History</div>
       <div class="tab" data-tab="audit" onclick="setTab('audit')">&#128220; Audit Log</div>
-      <a class="tab" href="../../uploads/BOM-MAKER.html" target="_blank" style="text-decoration:none">&#129513; BOM Maker (standalone)</a>
+      <a class="tab" href="BOM-MAKER.html" target="_blank" style="text-decoration:none">&#129513; BOM Maker (standalone)</a>
       <a class="tab" href="taskflow.html" target="_blank" style="text-decoration:none;margin-top:6px;border-top:1px solid var(--sidebar-line);border-radius:0 0 10px 10px;padding-top:12px">&#128203; TaskFlow ↗</a>
     </div>
   </aside>
@@ -1449,7 +1449,7 @@ function showProject(enc){const nm=decodeURIComponent(enc);const box=document.ge
   let h='<div class="panel pad"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px"><div><h2 style="font-size:17px">📁 '+esc(nm)+'</h2><div style="color:var(--slate);font-size:13px">'+(reg&&reg.cust?('Customer: '+esc(reg.cust)+' · '):'')+lines.length+' part type(s)'+(showPrice()?(' · material cost '+fmtMoney(total)):'')+'</div></div><div style="display:flex;gap:8px;flex-wrap:wrap">'+
     '<button class="btn ghost" onclick="projPDF(&quot;'+encodeURIComponent(nm)+'&quot;,false)">📄 Customer PDF</button>'+
     (showPrice()?'<button class="btn orange" onclick="projPDF(&quot;'+encodeURIComponent(nm)+'&quot;,true)">💰 Internal PDF</button>':'')+
-    '<button class="btn green" onclick="projXLSX(&quot;'+encodeURIComponent(nm)+'&quot;)">📥 Excel</button>'+'<a class="btn purple" href="'+bomMakerHref()+'" target="_blank" rel="noopener" style="text-decoration:none" onclick="return prepBomMakerFor(&quot;'+encodeURIComponent(nm)+'&quot;)">\uD83E\uDDE9 Open in BOM Maker</a>'+
+    '<button class="btn green" onclick="projXLSX(&quot;'+encodeURIComponent(nm)+'&quot;)">📥 Excel</button>'+'<a class="btn purple" href="'+bomMakerHref()+'" target="_blank" rel="noopener" onclick="prepBomMakerFor(&quot;'+encodeURIComponent(nm)+'&quot;)">\uD83E\uDDE9 Open in BOM Maker</a>'+
     '<button class="btn '+(reg&&reg.completed?'green':'ghost')+'" onclick="toggleProjectComplete(&quot;'+encodeURIComponent(nm)+'&quot;)">'+(reg&&reg.completed?'↺ Reopen project':'✓ Mark Complete')+'</button>'+
     '<button class="btn purple" onclick="openTaskFlow()">📋 TaskFlow</button>'+
     (me.role==='admin'?'<button class="btn red" onclick="deleteProject(&quot;'+encodeURIComponent(nm)+'&quot;)">🗑 Delete project</button>':'')+'</div></div>';
@@ -2147,7 +2147,7 @@ function renderBomDetail(){const id=document.getElementById('bomSel').value,box=
 // Everything issued to a project, grouped by part category, written straight into
 // BOM Maker's own store (same origin) so it opens pre-filled and every column /
 // option the user already set up in BOM Maker is preserved.
-const BOM_MAKER_FILE='../../uploads/BOM-MAKER.html', BOM_MAKER_KEY='cessd_bom_pro_v5';
+const BOM_MAKER_FILE='BOM-MAKER.html', BOM_MAKER_KEY='cessd_bom_pro_v5';
 function bomMakerHref(){
   if(location.protocol.indexOf('http')===0)return BOM_MAKER_FILE;
   let base='';try{base=String((DB.company&&DB.company.appUrl)||'').trim().replace(/\/$/,'');}catch(e){CESSLOG.cap(e);}
@@ -2180,10 +2180,6 @@ function prepBomMakerFor(enc){
   const total=cats.reduce(function(a,c){return a+c.items.length;},0);
   // Opened from a local file:// copy there is no BOM-MAKER.html next to it (and localStorage
   // is a different origin anyway) — so fall back to the hosted app URL.
-  if(location.protocol.indexOf('http')!==0){
-    let base='';try{base=String((DB.company&&DB.company.appUrl)||'').trim().replace(/\/$/,'');}catch(e){CESSLOG.cap(e);}
-    if(!base){toast('Open the hosted site (not a downloaded copy) to use BOM Maker',true);return false;}
-  }
   toast('BOM Maker: '+total+' item(s) in '+cats.length+' group(s) from '+nm,false,'good');
   return true;
 }
